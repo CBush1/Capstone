@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polygon</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 80%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <!-- <script src='config.js'></script> -->
+
+  </head>
+
+  <body>
+    <div id="mapWrapper">
+      <div id="map">
+
+      </div>
+    </div>
+  <div id="myControl" style="display:none"><select><option>hello
+    world^^</option></select></div>
+  </body>
+
+
+  <script type='text/javascript'>
+
+    var primaryKeys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,];
+    var siteColors = ['000000', '#FF0000', '#7CFC00']
+    var siteNames = ['range12_b1', 'range12_b2', 'range12_b3', 'range11_z2', 'range11_z1', 'range10_oc6','range10_z2','range10_z1', 'range13_z1', 'range13_z2'];
+
+    var siteVertices_1 = [ 45.146490, -122.757545, 45.146770, -122.757545, 45.146770, -122.757665, 45.146490, -122.757665, 45.146490, -122.757545 ];
+    var siteVertices_2 = [ 45.146490, -122.757800, 45.146770, -122.757800, 45.146770, -122.757665, 45.146490, -122.757665, 45.146490, -122.757800 ];
+    var siteVertices_3 = [ 45.146490, -122.757916, 45.146770, -122.757916, 45.146770, -122.757800, 45.146490, -122.757800, 45.146490, -122.757916 ];
+    var siteVertices_4 = [ 45.146409, -122.758053, 45.146409, -122.758274, 45.146728, -122.758270, 45.146726, -122.758275, 45.146726, -122.758041 ];
+    var siteVertices_5 = [ 45.146722, -122.758278, 45.146728, -122.758629, 45.146414, -122.758628, 45.146412, -122.758290, 45.146722, -122.758278 ];
+    var siteVertices_6 = [ 45.146709, -122.758642, 45.146424, -122.758637, 45.146430, -122.758806, 45.146711, -122.758797, 45.146709, -122.758642 ];
+    var siteVertices_7 = [ 45.146740, -122.759030, 45.146740, -122.758816, 45.146429, -122.758816, 45.146443, -122.759032, 45.146740, -122.759030 ];
+    var siteVertices_8 = [ 45.146744, -122.759035, 45.146438, -122.759038, 45.146445, -122.759351, 45.146738, -122.759344, 45.146744, -122.759035 ];
+    var siteVertices_9 = [ 45.146755, -122.758611, 45.147017, -122.758600, 45.147019, -122.758329, 45.146765, -122.758335, 45.146755, -122.758611 ];
+    var siteVertices_10 = [ 45.146755, -122.758041, 45.146757, -122.758322, 45.147019, -122.758313, 45.147015, -122.758047, 45.146755, -122.758041 ];
+
+    var i = 0;
+
+
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 18,
+        minZoom: 18,
+        maxZoom: 18,
+        center: {lat: 45.147124, lng: -122.760927},
+        mapTypeId: 'satellite',
+        zoomControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: false,
+      })
+
+      var greenhousePolygon;
+        for (let k = 0; k < primaryKeys.length; k++) {
+          var pk = primaryKeys[k];
+          var verticesArray = new Array(( eval("siteVertices_" + pk).length) / 2);
+
+          var m = 0;
+          var centroidLat = 0;
+          var centroidLng = 0;
+
+          for (var n = 0; n < eval("siteVertices_" + pk).length; n += 2){
+              verticesArray[m] = new google.maps.LatLng(eval("siteVertices_" + pk)[n], eval("siteVertices_" + pk)[n + 1]);
+              m = m + 1;
+              centroidLat += eval("siteVertices_" + pk)[n];
+              centroidLng += eval("siteVertices_" + pk)[n + 1];
+          }
+
+          var cent = new google.maps.LatLng(centroidLat/m, centroidLng/m);
+          // //
+          var greenhousePolygon = new google.maps.Polygon({
+              paths: verticesArray,
+              strokeColor: "#FF0000",
+              strokeOpacity: 0.5,
+              strokeWeight: 1,
+              fillColor: siteColors[i],
+              fillOpacity: 0.20,
+              position: cent,
+              map:map });
+          click(greenhousePolygon, i);
+        }
+
+
+            //   overlay.prototype.onAdd = function() {
+            //   var div = document.createElement("div");
+            //   div.style.borderStyle = 'blue';
+            //   div.style.borderWidth = '3px';
+            //   div.style.position = 'absolute';
+            //
+            //   var modal = document.createElement("modal");
+            //   modal.style.width = '100%';
+            //   modal.style.height = '100%';
+            //   modal.style.position = 'absolute';
+            //   div.appendChild(modal);
+            //
+            //   this.div_ = div;
+            //
+            //   var panes = this.getPanes();
+            //   panes.overlayLayer.appendChild(div);
+            // }
+          // overlay.prototype.draw = function() {
+
+      }
+
+      function click(overlay, i) {
+        // var infowindow = new google.maps.InfoWindow({ content: siteNames[number] });
+        // google.maps.event.addListener(overlay, 'mouseover', function() { infowindow.open(map, overlay); });
+        // google.maps.event.addListener(overlay, 'mouseout', function() { infowindow.close(map, overlay); });
+        google.maps.event.addListener(overlay, 'click', function(){
+          if (siteColors[i] == siteColors[i]){i++;}
+            overlay.setOptions({fillColor:siteColors[i]});
+          if (i == siteColors.length){i %= siteColors.length}
+        })
+        let map = document.getElementById("map")
+        let div = document.createElement("div");
+        div.style.width = "100px";
+        div.style.height = "100px";
+        div.style.backgroundColor = "red";
+        document.map.appendChild("div");
+      }
+    </script>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap&libraries=drawing,geometry" async defer>
+    </script>
+
+
+</html>
