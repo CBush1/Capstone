@@ -6,4 +6,5 @@ app_name ='rup'
 urlpatterns = [
     path('', views.index, name='index'),
     path('polygon/', views.polygon, name='polygon'),
+    path('selectproduct/', views.selectproduct, name='selectproduct'),
 ]

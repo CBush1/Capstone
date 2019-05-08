@@ -6,7 +6,7 @@ from rup.models import Pesticide
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        response = requests.get("https://data.oregon.gov/resource/az53-86zj.json?$$app_token=XGAD8q6M7qOimb3nCwDhG4e0P")
+        response = requests.get("https://data.oregon.gov/resource/az53-86zj.json?$$app_token=SECRET_KEY_ODA")
         data = json.loads(response.text)
         for i in range(len(data)):
             product_name = data[i]['product_name']

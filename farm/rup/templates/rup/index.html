@@ -5,7 +5,18 @@
     <title></title>
   </head>
   <body>
+    <div id="map"></div>
     {{message}}
 
   </body>
+  <script>
+    let map = document.getElementById('map');
+    map.innerHTML = "<p><b>Hello World!</b></p>";
+
+    let box = document.createElement("div");
+    box.style.width = "100px";
+    box.style.height = "100px";
+    box.style.backgroundColor = "red";
+    map.appendChild(box);
+  </script>
 </html>
