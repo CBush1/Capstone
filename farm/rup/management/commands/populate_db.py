@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 import requests
 import json
 from rup.models import Pesticide
+from config import config
 
 class Command(BaseCommand):
 

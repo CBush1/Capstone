@@ -1,0 +1,34 @@
+{% extends 'rup/polygon.html' %}
+<!-- {%block head%}{%endblock%} -->
+<title>Farm View</title>
+</head>
+
+
+<body>
+</body>
+<script>
+$(".btn-primary").hide();
+yourFunction()
+
+
+{{locked}}
+function yourFunction() {
+      if ({{locked}}) {
+          // locked = true;
+          console.log("true")
+          function click(overlay, i, primaryKeys, siteNames) {
+            google.maps.event.addListener(overlay, 'click', function(){
+                $('#map, primaryKeys, siteNames').on('dblclick', function (e) {
+                  $('#exampleModalCenter').modal('toggle');
+                  $("#SiteName").text(siteNames[primaryKeys-1])
+                  })
+
+              if (siteColors[i] == siteColors[i]){i++;}
+                overlay.setOptions({fillColor:siteColors[i]});
+              if (i == siteColors.length){i %= siteColors.length}
+            })
+          } locked = false;
+      }; else { console.log("true") }
+  }
+
+</script>
