@@ -10,5 +10,8 @@ urlpatterns = [
     path('polygon/', views.polygon, name='polygon'),
     path('save_product/', views.save_product, name='save_product'),
     path('get_product/', views.get_product, name='get_product'),
-    path('farmView/', views.farmView, name='farmView')
+    path('mylogin/', views.mylogin, name='mylogin'),
+    path('modal/', views.modal, name='modal'),
+    # path('locations/', views.locations, name='locations'),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
