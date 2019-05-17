@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import Pesticide, Location, LocationPesticide
+from .models import Pesticide, Location, LocationPesticide, LocationManager
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -35,6 +35,8 @@ def polygon(request):
     pesticides=[]
     uses = []
     polygons = []
+    print(locations)
+    restricted = Location.objects.is_restricted()
 
     for i in range(1, (len(datas))):
         if datas[i].use != None:
@@ -46,8 +48,10 @@ def polygon(request):
         'datas' : datas,
         'locations':locations,
         'spray_locations':spray_locations,
+        'restricted':restricted,
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
     }
+    print(restriction)
 
     return render(request, 'rup/polygon.html', context)
 
@@ -78,15 +82,18 @@ def get_product(request):
 
 
 def modal(request):
+    # how to go from product name to django product id????
     data = json.loads(request.body)
     print(data)
-    product_name = data['product']
-    use = data['use']
-    epa_number = data['epa_number']
-    rei = data['rei_para']
-    # modal_data = LocationPesticide(product_name=product_name, epa_number=epa_number, use=use, rei=rei)
-    # modal_data.save()
-    # print(modal_data)
+    location_id = data['location_id']
+    pesticide_id = data['pesticide_id']
+    user = request.user
+    start = data['start']
+    end = data['end']
+    modal_data = LocationPesticide(location_id=location_id, pesticide_id=pesticide_id, start=start, end=end, user=user)
+
+    modal_data.save()
+    print(modal_data)
     return HttpResponse('ok')
 #
 # def locations(request):

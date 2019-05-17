@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import datetime
+from django.utils import timezone
 
 class Pesticide(models.Model):
     product_name = models.CharField(max_length=200)
@@ -28,29 +29,27 @@ class Applicator(models.Model):
     def __str__(self):
         return self.applicator_name
 
+class LocationManager(models.Manager):
+    def is_restricted(self):
+        now = timezone.now()
+        if self.filter(locationPesticide__start__lte=now, locationPesticide__end__gte=now):
+            print("ok")
+            return True
+
 class Location(models.Model):
     name = models.CharField(max_length=200)
     verticies = models.TextField()
-
-    def is_restricted(self):
-        import datetime
-        now = datetime.now()
-        if LocationPesticide.start < now.strftime("%Y-%m-%d %I:%M") and LocationPesticide.end > now.strftime("%Y-%m-%d %I:%M"):
-            return "Restriced"
-        # check if there exists a locationpesticide that the current date files within
-        else:
-            return "Unrestricted"
-        pass
+    restricted = LocationManager()
 
     def __str__(self):
         return self.name
 
 class LocationPesticide(models.Model):
-    name = models.ManyToManyField(Location)
-    pesticide_id = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.location.name + ' ' + self.pesticide.product_name

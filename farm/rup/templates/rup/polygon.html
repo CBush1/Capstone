@@ -89,7 +89,7 @@
               <div class='modal-content'>
                 <div class='modal-header'>
                   <h5 class='modal-title' id='SiteName'></h5>
-                  <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                  <button id="cancel" type='button' class='close' data-dismiss='modal' aria-label='Close'>
                     <span aria-hidden='true'>&times;</span>
                   </button>
                 </div>
@@ -97,15 +97,15 @@
                   <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
                   <div class='submit_style'>
                     <h5>Purpose</h5>
-                      <select id=selection>
-                      </select>
-                    <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button>
-                  </div>
-                  <div class='submit_style'>
-                    <h5>Product</h5>
-                    <select id=product_selection>
+                    <select id="selection">
                     </select>
-                    <button id='submit_product' onclick='productChoice()' type='submit' value = 'submit_product' name='pesticide'>Apply</button>
+                    <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
+                  </div>
+                  <div class="submit_style">
+                    <h5>Product</h5>
+                    <select id="product_selection">
+                    </select>
+                    <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
                   </div>
                   <hr>
                   <div>
@@ -113,33 +113,32 @@
                     <p id=epa_number></p>
                   </div>
                   <hr>
-                  <div class='rei'>
-                    <input id="rei_input" type='number' name='rei' min='1' max='72' value=0>
-                    <button id="rei" type='button' value ='submit' onclick="rei_click()" name = 'rei'> Submit </button>
+                  <div class="rei">
+                    <input id="rei_input" type="number" name="rei" min="1" max="72" value=0>
+                    <button id="rei" type="button" value ="submit" name = "rei"> Submit </button>
                     <div id="rei_para">
                     </div>
                   </div>
 
 
                   <hr>
-                  <button id=popover_product type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
+                  <button id="popover_product" type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
                   <hr>
 
                   <hr>
-                  <button id='popover_product' type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Clean up after exposure' data-content='' >What to do in case of exposure</button>
+                  <button id="popover_product" type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Clean up after exposure" data-content="" >What to do in case of exposure</button>
                   <hr>
 
                   <h5>Tooltips in a modal</h5>
-                  <p><a href='#' class='tooltip-test' title='Tooltip'>This link</a> and <a href='#' class='tooltip-test' title='Tooltip'>that link</a> have tooltips on hover.</p>
+                  <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> have tooltips on hover.</p>
                   <hr>
                   <br>
                   <input id="comment" type="text" name="comment" placeholder="Comments" />
                   <br>
 
                 </div>
-                <div class='modal-footer'>
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button id="btn_save" type="button" class="btn btn-secondary">Post Application</button>
+                <div class="modal-footer">
+                  <button id="btn_save" type="button" data-dismiss="modal" class="btn btn-secondary">Post Application</button>
                 </div>
               </div>
             </div>
@@ -155,22 +154,22 @@
 
 
         <!-- Modal -->
-        <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
-          <div class='modal-dialog modal-dialog-centered' role='document'>
-            <div class='modal-content'>
-              <div class='modal-header'>
-                <h5 class='modal-title' id='SiteName'></h5>
-                <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                  <span aria-hidden='true'>&times;</span>
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="SiteName"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class='modal-body'>
+              <div class="modal-body">
                 <!-- This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical -->
-                <div class='submit_style'>
+                <div class="submit_style">
                   <h5>Purpose</h5>
                     <div id="use"></div>
                 </div>
-                <div class='submit_style'>
+                <div class="submit_style">
                   <h5>Product</h5>
                   <div  id="product"></div>
                 </div>
@@ -180,33 +179,32 @@
                   <p id=epa_number></p>
                 </div>
                 <hr>
-                <div class='rei'>
-                  <input id="rei_input" type='number' name='rei' min='1' max='72' value=0>
-                  <button id="rei" type='button' value ='submit' onclick="rei_click()" name = 'rei'> Submit </button>
+                <div class="rei">
+                  <input id="rei_input" type="number" name="rei" min="1" max="72" value=0>
+                  <button id="rei" type="button" value ="submit"  name = "rei"> Submit </button>
                   <div id="rei_para">
                   </div>
                 </div>
 
+                <hr>
+                <div id="popover_product" class="btn-danger" data-toggle="popover" title="Restricted use" data-content="">
+                </div>
 
                 <hr>
-                <button id=popover_product type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
-                <hr>
-
-                <hr>
-                <button id='popover_product' type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Clean up after exposure' data-content='' >What to do in case of exposure</button>
+                <button id="popover_product" type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Clean up after exposure" data-content="" >What to do in case of exposure</button>
                 <hr>
 
                 <h5>Tooltips in a modal</h5>
-                <p><a href='#' class='tooltip-test' title='Tooltip'>This link</a> and <a href='#' class='tooltip-test' title='Tooltip'>that link</a> have tooltips on hover.</p>
+                <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> have tooltips on hover.</p>
                 <hr>
                 <br>
                 <input type="text" name="comment" placeholder="Comments" />
                 <br>
 
               </div>
-              <div class='modal-footer'>
+              <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-secondary">Post Application</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Post Application</button>
               </div>
             </div>
           </div>
@@ -222,8 +220,24 @@
 
   </body>
 
-  <script type='text/javascript'>
+  <script type="text/javascript">
 
+    //================= Query Selectors========================================
+    let product_selection = document.querySelector("#product_selection")
+    let submit_product = document.querySelector("#submit_product")
+    let selection = document.querySelector("#selection")
+    let rei = document.getElementById("rei")
+    let rei_para = document.getElementById("rei_para")
+    let number = document.getElementById("epa_number")
+    let btn_save = document.querySelector('#btn_save')
+    let cancel = document.querySelector('#cancel')
+
+
+    // ================Styling=================================================
+    product_selection.classList.add('select_style')
+    selection.classList.add('select_style')
+
+    let selected_location_id = null
     var color = 0;
     function initMap() {
       let locations = [
@@ -274,10 +288,8 @@
           position: cent,
           map:map
         });
-
         click(greenhousePolygon, location);
-
-        // timer(greenhousePolygon)
+        cancel_modal(greenhousePolygon)
       }
     }
 
@@ -285,109 +297,55 @@
       //------if color changes red, the modal becomes available by dblclick-----
 
       function click(greenhousePolygon, location) {
-      var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
-        console.log(location["name"])
-        greenhousePolygon.setOptions({fillColor:"#FF0000"});
-        google.maps.event.removeListener(listener);
-        $('#map, primaryKeys, siteNames').on('dblclick', function (e) {
-          $('#exampleModalCenter').modal('toggle');
-          $("#SiteName").text(location.name)
+        var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
+          console.log(location["name"])
+          greenhousePolygon.setOptions({fillColor:"#FF0000"});
+          $('#map').on('dblclick', function (e) {
+            $('#exampleModalCenter').modal('toggle');
+            $("#SiteName").text(location.name)
+            selected_location_id = location.id
           })
         })
       }
-
-
+      function cancel_modal(greenhousePolygon, listener){
+        cancel.addEventListener("click", function(){
+        greenhousePolygon.setOptions({fillColor:"#000000"});
+        })
+      }
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
-      var selection = document.querySelector("#selection")
-      selection.classList.add('select_style')
-      var myFrag = document.createDocumentFragment()
-      var d = 0
-      // {% for use in uses %}
+      {% for use in uses %}
         var option = document.createElement("option")
         option.text = "{{use.use}}"
-        option.value = d++
-        myFrag.appendChild(option)
-      // {%endfor%}
-      selection.appendChild(myFrag)
+        option.value = {{use.id}}
+        selection.appendChild(option)
+      {%endfor%}
 
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
-      function useChoice(){
-        var use_choice = $('#selection option:selected').text()
-        var product_selection = document.querySelector("#product_selection")
-        product_selection.classList.add('select_style')
-        var myFrag = document.createDocumentFragment()
-        var length = product_selection.length;
-        if (length > 0){
-          for (let i = length-1; i > -1; i--){
-            product_selection.options[i] = null;
-          }
-        }
-
-        var t = 0
-        {% for pesticide in datas %}
+      selection.addEventListener("change", function(){
+        var use_choice = $('#selection option:selected').text();
+        product_selection.innerHTML = '';
+        {% for pesticide in datas %};
           if ("{{pesticide.use}}" == use_choice){
-            var option = document.createElement("option")
-              option.text = "{{pesticide.product_name}}"
-              option.value = t++
-              myFrag.appendChild(option)
-          }
-        {% endfor %}
-        product_selection.appendChild(myFrag)
-      }
+            let option = document.createElement("option")
+            option.text = "{{pesticide.product_name}}"
+            option.value = {{pesticide.id}}
+            product_selection.appendChild(option)
+          };
+        {% endfor %};
+      });
 
-      let selection_modal = document.querySelector('#selection')
-      let product_selection =  document.querySelector('#product_selection')
-      let epa_number = document.querySelector('#epa_number')
-      let comment = document.querySelector('#comment')
-      let rei_para = document.querySelector('#rei_para')
-      let btn_save = document.querySelector('#btn_save')
-
-      btn_save.onclick = function() {
-        let data = {
-          use: selection_modal.options[selection_modal.selectedIndex].text,
-          product: product_selection.options[product_selection.selectedIndex].text,
-          epa_number: epa_number.innerText,
-          comment: comment.value,
-          rei_para: rei_para.innerText,
-
-        }
-
-        let config = {
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}'
-          }
-        }
-        axios.post('{% url 'rup:modal' %}', data, config)
-        .then(function(response) {
-          console.log(response.data)
-
-      })
-    }
-        // var data_modal = response.data;
-        //
-        // for (let i=0; i < data.products.length; i++) {
-        //   if (product_choice_modal == data.products[i].product_name){
-        //     $('use').append(data.products[i].use);
-        //     $('product').append(data.products[i].product_name);
-        //     var number = document.getElementById('epa_number')
-        //     number.innerText = data.products[i].epa_number
-        //     $('button').attr('data-content', data.products[i].rui);
-        //     popover.setContent();
-        //     $('rei_para').append(rei_modal);
 
 
 
       //---------------------- Modal Pesticide Popover initiator ------------------------
-      function productChoice(){
-        $(function () {
-        $('[data-toggle="popover"]').popover()
+      submit_product.addEventListener("click", function(){
+        $(function() {
+          $('[data-toggle="popover"]').popover()
         })
-
-
         // ---------------------- Ajax call------------------
         // ----------- pulls pesticide data and compares it product choice.  ithen populates the popover with the correct informaiton.-----
 
@@ -406,79 +364,92 @@
             if (product_choice == data.products[i].product_name){
               $('button').attr('data-content', data.products[i].rui);
               popover.setContent();
-              var number = document.getElementById('epa_number')
               number.innerText = data.products[i].epa_number
             }
           }
         })
-      }
+      })
 
 
-      // ---------------------- Modal REI timer ------------------------
+      // ---------------------- Modal REI set time ------------------------
 
-      var rei = document.getElementById("rei")
-      rei_para = document.getElementById("rei_para")
-      f=0
-      function rei_click(rei_input) {
+      let JSONdate = null
+      let JSONrei_date = null
 
-        var date = new Date().toLocaleDateString();
-        var h = new Date();
-        var m = new Date();
-        var h_rei = new Date();
-        var rei_date = new Date()
-        var rei_input = parseInt(document.getElementById("rei_input").value)
-        if (rei_input >= 24){
-          var day = (rei_date.getDate() + rei_input/24)
-          rei_date.setDate(day)
+      // function getPrettyDate(date) {
+      //   let ampm = ''
+      //   if (h.getHours() < 12) {
+      //     ampm = 'AM'
+      //   } else {
+      //     ampm = 'PM'
+      //   }
+      //   let h = date.getHours() % 12;
+      //   if (h == 0) {
+      //     h += 12
+      //   }
+      //   let m = date.getMinutes();
+      //   if (m < 10) {
+      //     m = "0" + m
+      //   }
+      //   return `${h} : ${m} ${ampm}`
+      rei.addEventListener("click", function(){
+         rei_click(JSONdate, JSONrei_date) })
+
+        rei_click(JSONdate, JSONrei_date){
+        let rei_input = document.getElementById("rei_input").value
+        let date_time = new Date()
+        let date = date_time.toLocaleDateString();
+        let rei_input_int = parseInt(rei_input)
+
+        if (rei_input_int >= 24){
+          let day = (date_time.getDate() + rei_input_int/24)
+          date_time.setDate(day)
         }
-        rei_date = rei_date.toLocaleDateString()
 
-        if (h.getHours() < 12){var ampm = 'AM'} else {ampm = 'PM'}
-        h = h.getHours() % 12;
-        if (h == 0){h+= 12}
-        m = m.getMinutes();
+        let rei_date = date_time.toLocaleDateString()
+        let ampm = ""
+        if (date_time.getHours() < 12){ampm = 'AM'} else {ampm = 'PM'}
+        let h = date_time.getHours() % 12;
+        if (h == 0){h += 12}
+        let m = date_time.getMinutes();
         if (m < 10){m = "0" + m;}
-        var time = `${h} : ${m} ${ampm}`
+        let time = `${h} : ${m} ${ampm}`
 
-        var h_rei_int = h_rei.setHours(h_rei.getHours()+ rei_input);
-        var h_rei = new Date(h_rei_int)
-        if (h_rei.getHours() < 12){var ampm = 'AM'} else {ampm = 'PM'}
+        let h_rei_int = date_time.setHours(date_time.getHours() + rei_input_int);
+        let h_rei = new Date(h_rei_int)
+        if (h_rei.getHours() < 12){let ampm = 'AM'} else {ampm = 'PM'}
         h_rei = h_rei.getHours() % 12;
         if (h_rei == 0){h_rei+= 12}
-        var rei_time = `${h_rei} : ${m} ${ampm}`
+        let rei_time = `${h_rei} : ${m} ${ampm}`
 
-        let statement = document.createElement('p');
-        let rei_statement = document.createElement('p');
-        statement.appendChild(document.createTextNode("Applied on "+date+ " at "+time))
-        rei_statement.appendChild(document.createTextNode("Stay out until "+rei_date+ " at "+rei_time))
-
-        if (f%2==0){
-          rei_para.appendChild(statement);
-          rei_para.appendChild(rei_statement);
-        } else { while(rei_para.firstChild){rei_para.removeChild(rei_para.firstChild)}
-      }
-      f++
-
-      return(rei_time, rei_date, date, time)
-    }
+        rei_para.innerText = "Applied on "+date+ " at "+time + '\n' + "Stay out until "+rei_date+ " at "+rei_time
+         JSONrei_date = date_time.setMilliseconds(rei_input_int*3600*1000)
+         
+      })
 
 
-//---------------------------- Needs work  Need to find how to compare the rei time and date to just a normal new date and then compare----------------------
-    function timer(greenhousePolygon, rei_time, rei_date) {
-      document.getElementById("rei").addEventListener("click", function(){
-        setInterval (function(){
-          var t = new Date();
-          var d = new Date().toLocaleDateString();
-          if (d == rei_date && t == rei_time ){
-            google.maps.event.addDomListener(rei, 'click', function() {
-            greenhousePolygon.setOptions({fillColor:siteColors[0]});
-            });
+      // -------------------Save Data----------------------------------
+
+      btn_save.addEventListener("click", function(){
+
+        pesticide_id = product_selection.options[product_selection.selectedIndex].value
+        let data = {
+          'start': JSONdate,
+          'end': JSONrei_date,
+          'pesticide_id': pesticide_id,
+          'location_id': selected_location_id
+        }
+        let config = {
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
           }
+        }
+        axios.post("{% url 'rup:modal' %}", data, config)
+        .then(function(response) {
+          console.log(response.data)
         })
-      }, 1000)
-    }
-
-// -------------------Save data onclick----------------------------------
+      })
+    })
 
 
     </script>
