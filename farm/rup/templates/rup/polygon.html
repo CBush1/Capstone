@@ -375,8 +375,7 @@
 
       // ---------------------- Modal REI set time ------------------------
 
-      let JSONdate = null
-      let JSONrei_date = null
+
 
       // function getPrettyDate(date) {
       //   let ampm = ''
@@ -394,15 +393,22 @@
       //     m = "0" + m
       //   }
       //   return `${h} : ${m} ${ampm}`
+      let JSONdate = null
+      let JSONdate_input = null
+
+
       rei.addEventListener("click", function() {
          rei_click()
       })
 
       function rei_click(){
+
         let rei_input = document.getElementById("rei_input").value
         let date_time = new Date()
+
         let date = date_time.toLocaleDateString();
         let rei_input_int = parseInt(rei_input)
+
 
         if (rei_input_int >= 24){
           let day = (date_time.getDate() + rei_input_int/24)
@@ -418,6 +424,25 @@
         if (m < 10){m = "0" + m;}
         let time = `${h} : ${m} ${ampm}`
 
+
+        let yyyy = date_time.getFullYear()
+        let mm = date_time.getMonth()+1
+        if (mm < 12){mm = "0" + mm;}
+        let dd = date_time.getDate()
+        if (dd < 10){dd = "0" + dd;}
+        let dd_rei = date_time.getDate()
+        if (dd_rei < 10){dd_rei = "0" + dd_rei;}
+        let hh = date_time.getHours()
+        if (hh < 10){hh = "0" + hh;}
+        let min = date_time.getMinutes()
+        if (min < 10){min = "0" + min;}
+        let ss = date_time.getSeconds()
+        if (ss < 10){ss = "0" + ss;}
+        let uuu = date_time.getMilliseconds()
+        let tz = '0'+ date_time.getTimezoneOffset()/60 + ':00'
+
+        JSONdate = `${yyyy}`+'-'+`${mm}`+'-'+`${dd}`+' '+`${hh}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`
+
         let h_rei_int = date_time.setHours(date_time.getHours() + rei_input_int);
         let h_rei = new Date(h_rei_int)
         if (h_rei.getHours() < 12){let ampm = 'AM'} else {ampm = 'PM'}
@@ -426,10 +451,19 @@
         let rei_time = `${h_rei} : ${m} ${ampm}`
 
         rei_para.innerText = "Applied on "+date+ " at "+time + '\n' + "Stay out until "+rei_date+ " at "+rei_time
-        // JSONrei_date = date_time.setMilliseconds(rei_input_int*3600*1000)
 
+        if (rei_input_int >= 24){
+          dd_rei = (date_time.getDate() + rei_input_int/24)
+          date_time.setDate(dd_rei)
+        }
+        let hh_rei = h_rei + 12
+        if (hh_rei < 10){hh_rei = "0" + hh_rei}
+
+        JSONdate_rei = `${yyyy}`+'-'+`${mm}`+'-'+`${dd_rei}`+' '+`${hh_rei}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`
+
+        console.log(JSONdate)
+        console.log(JSONdate_rei)
       }
-
 
       // -------------------Save Data----------------------------------
 
@@ -438,7 +472,7 @@
         pesticide_id = product_selection.options[product_selection.selectedIndex].value
         let data = {
           'start': JSONdate,
-          'end': JSONrei_date,
+          'end': JSONdate_rei,
           'pesticide_id': pesticide_id,
           'location_id': selected_location_id
         }

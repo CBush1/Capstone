@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 
 import json
+import datetime
 
 def index(request):
     context = {
