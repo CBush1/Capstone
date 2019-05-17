@@ -47,6 +47,7 @@ def polygon(request):
         'locations':locations,
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
     }
+    print(locations)
 
     return render(request, 'rup/polygon.html', context)
 

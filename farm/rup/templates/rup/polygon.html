@@ -147,31 +147,28 @@
       </div>
       {%else%}
       <div class="user">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-          <!-- Launch demo modal -->
-        </button>
-
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="SiteName"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
+        <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered' role='document'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <h5 class='modal-title' id='SiteName'></h5>
+                <button id="cancel" type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                  <span aria-hidden='true'>&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                <!-- This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical -->
-                <div class="submit_style">
+              <div class='modal-body'>
+                <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
+                <div class='submit_style'>
                   <h5>Purpose</h5>
-                    <div id="use"></div>
+                  <p id="selection"> {{locations.pesticide_id}}</p>
+                  <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
                 </div>
                 <div class="submit_style">
                   <h5>Product</h5>
-                  <div  id="product"></div>
+                  <p id="product_selection"> {{LocationPesticide.pesticide}}</p>
+                  <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
                 </div>
                 <hr>
                 <div>
@@ -181,14 +178,15 @@
                 <hr>
                 <div class="rei">
                   <input id="rei_input" type="number" name="rei" min="1" max="72" value=0>
-                  <button id="rei" type="button" value ="submit"  name = "rei"> Submit </button>
+                  <button id="rei" type="button" value ="submit" name = "rei"> Submit </button>
                   <div id="rei_para">
                   </div>
                 </div>
 
+
                 <hr>
-                <div id="popover_product" class="btn-danger" data-toggle="popover" title="Restricted use" data-content="">
-                </div>
+                <button id="popover_product" type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
+                <hr>
 
                 <hr>
                 <button id="popover_product" type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Clean up after exposure" data-content="" >What to do in case of exposure</button>
@@ -198,17 +196,17 @@
                 <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> have tooltips on hover.</p>
                 <hr>
                 <br>
-                <input type="text" name="comment" placeholder="Comments" />
+                <input id="comment" type="text" name="comment" placeholder="Comments" />
                 <br>
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Post Application</button>
+                <button id="btn_save" type="button" data-dismiss="modal" class="btn btn-secondary">Post Application</button>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {% endif %}
@@ -317,13 +315,16 @@
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
-      let opiton = null
-      {% for use in uses %}
-        option = document.createElement("option")
-        option.text = "{{use.use}}"
-        option.value = {{use.id}}
-        selection.appendChild(option)
-      {%endfor%}
+      {% if user.is_staff %}
+        let option = null
+        {% for use in uses %}
+          option = document.createElement("option")
+          option.text = "{{use.use}}"
+          option.value = {{use.id}}
+          selection.appendChild(option)
+        {%endfor%}
+
+      {%endif%}
 
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
@@ -475,6 +476,7 @@
           'end': JSONdate_rei,
           'pesticide_id': pesticide_id,
           'location_id': selected_location_id
+          ''
         }
         let config = {
           headers: {
