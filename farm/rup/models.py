@@ -29,20 +29,19 @@ class Applicator(models.Model):
     def __str__(self):
         return self.applicator_name
 
-class LocationManager(models.Manager):
-    def is_restricted(self):
-        now = timezone.now()
-        if self.filter(locationPesticide__start__lte=now, locationPesticide__end__gte=now):
-            print("ok")
-            return True
 
 class Location(models.Model):
     name = models.CharField(max_length=200)
     verticies = models.TextField()
-    restricted = LocationManager()
 
     def __str__(self):
         return self.name
+
+    def is_restricted(self):
+        now = timezone.now()
+        if self.locationpesticide_set.filter(start__lte=now, end__gte=now).exists():
+            return True
+        return False
 
 class LocationPesticide(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

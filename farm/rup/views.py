@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import Pesticide, Location, LocationPesticide, LocationManager
+from .models import Pesticide, Location, LocationPesticide
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -31,12 +31,9 @@ def mylogin(request):
 def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
-    spray_locations = LocationPesticide.objects.all()
     pesticides=[]
     uses = []
     polygons = []
-    print(locations)
-    restricted = Location.objects.is_restricted()
 
     for i in range(1, (len(datas))):
         if datas[i].use != None:
@@ -47,11 +44,8 @@ def polygon(request):
         'uses': uses,
         'datas' : datas,
         'locations':locations,
-        'spray_locations':spray_locations,
-        'restricted':restricted,
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
     }
-    print(restriction)
 
     return render(request, 'rup/polygon.html', context)
 

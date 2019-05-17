@@ -246,6 +246,7 @@
           id: {{location.id}},
           name: '{{location.name}}',
           vertices: [{{location.verticies}}],
+          restricted: {% if location.is_restricted %}true{% else %}false {% endif %}
         },
       {% endfor %}
       ]
@@ -283,7 +284,7 @@
           strokeColor: "#FF0000",
           strokeOpacity: 0.5,
           strokeWeight: 1,
-          fillColor: "#000000",
+          fillColor: location.restricted? 'red': "#000000",
           fillOpacity: 0.20,
           position: cent,
           map:map
@@ -309,15 +310,16 @@
       }
       function cancel_modal(greenhousePolygon, listener){
         cancel.addEventListener("click", function(){
-        greenhousePolygon.setOptions({fillColor:"#000000"});
+          greenhousePolygon.setOptions({fillColor:"#000000"});
         })
       }
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
+      let opiton = null
       {% for use in uses %}
-        var option = document.createElement("option")
+        option = document.createElement("option")
         option.text = "{{use.use}}"
         option.value = {{use.id}}
         selection.appendChild(option)
@@ -392,10 +394,11 @@
       //     m = "0" + m
       //   }
       //   return `${h} : ${m} ${ampm}`
-      rei.addEventListener("click", function(){
-         rei_click(JSONdate, JSONrei_date) })
+      rei.addEventListener("click", function() {
+         rei_click()
+      })
 
-        rei_click(JSONdate, JSONrei_date){
+      function rei_click(){
         let rei_input = document.getElementById("rei_input").value
         let date_time = new Date()
         let date = date_time.toLocaleDateString();
@@ -423,9 +426,9 @@
         let rei_time = `${h_rei} : ${m} ${ampm}`
 
         rei_para.innerText = "Applied on "+date+ " at "+time + '\n' + "Stay out until "+rei_date+ " at "+rei_time
-         JSONrei_date = date_time.setMilliseconds(rei_input_int*3600*1000)
-         
-      })
+        // JSONrei_date = date_time.setMilliseconds(rei_input_int*3600*1000)
+
+      }
 
 
       // -------------------Save Data----------------------------------
@@ -449,7 +452,6 @@
           console.log(response.data)
         })
       })
-    })
 
 
     </script>
