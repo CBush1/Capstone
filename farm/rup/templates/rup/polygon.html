@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+
+
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -78,10 +80,6 @@
     <div id="authenicator">
       {% if user.is_staff %}
         <div class="manager">
-          <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-            Launch demo modal
-          </button>
 
           <!-- Modal -->
           <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
@@ -97,14 +95,12 @@
                   <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
                   <div class='submit_style'>
                     <h5>Purpose</h5>
-                    <select id="selection">
-                    </select>
+                    <select id="selection"> {{uses.use}}</select>
                     <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
                   </div>
                   <div class="submit_style">
                     <h5>Product</h5>
-                    <select id="product_selection">
-                    </select>
+                    <select id="product_selection"></select>
                     <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
                   </div>
                   <hr>
@@ -162,13 +158,12 @@
                 <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
                 <div class='submit_style'>
                   <h5>Purpose</h5>
-                  <p id="selection"> {{locations.pesticide_id}}</p>
+                  <p id="user_selection"></p>
                   <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
                 </div>
                 <div class="submit_style">
                   <h5>Product</h5>
-                  <p id="product_selection"> {{LocationPesticide.pesticide}}</p>
-                  <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
+                  <p id="user_product_selection"></p>
                 </div>
                 <hr>
                 <div>
@@ -220,7 +215,9 @@
 
   <script type="text/javascript">
 
+
     //================= Query Selectors========================================
+    {% if user.is_staff %}
     let product_selection = document.querySelector("#product_selection")
     let submit_product = document.querySelector("#submit_product")
     let selection = document.querySelector("#selection")
@@ -230,11 +227,26 @@
     let btn_save = document.querySelector('#btn_save')
     let cancel = document.querySelector('#cancel')
 
+    {%else%}
+    //================= User Query Selectors========================================
+    let user_product_selection = document.querySelector("#product_selection")
+    let submit_product = document.querySelector("#submit_product")
+    let user_selection = document.querySelector("#selection")
+    let rei = document.getElementById("rei")
+    let rei_para = document.getElementById("rei_para")
+    let number = document.getElementById("epa_number")
+    let btn_save = document.querySelector('#btn_save')
+    let cancel = document.querySelector('#cancel')
+    {% endif%}
+
+
+
 
     // ================Styling=================================================
+    {% if user.is_staff %}
     product_selection.classList.add('select_style')
     selection.classList.add('select_style')
-
+  {% endif%}
     let selected_location_id = null
     var color = 0;
     function initMap() {
@@ -288,7 +300,9 @@
           map:map
         });
         click(greenhousePolygon, location);
-        cancel_modal(greenhousePolygon)
+        {% if user.is_staff %}
+          cancel_modal(greenhousePolygon)
+        {%endif%}
       }
     }
 
@@ -296,13 +310,16 @@
       //------if color changes red, the modal becomes available by dblclick-----
 
       function click(greenhousePolygon, location) {
-        var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
-          console.log(location["name"])
-          greenhousePolygon.setOptions({fillColor:"#FF0000"});
-          $('#map').on('dblclick', function (e) {
-            $('#exampleModalCenter').modal('toggle');
-            $("#SiteName").text(location.name)
-            selected_location_id = location.id
+
+          var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
+          {% if user.is_staff %}
+            console.log(location["name"])
+            greenhousePolygon.setOptions({fillColor:"#FF0000"});
+          {%endif%}
+        $('#map').on('dblclick', function (e) {
+          $('#exampleModalCenter').modal('toggle');
+          $("#SiteName").text(location.name)
+          selected_location_id = location.id
           })
         })
       }
@@ -312,8 +329,6 @@
         })
       }
 
-      //---------------------- Hides modal button --------------------------
-      $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
       {% if user.is_staff %}
         let option = null
@@ -328,27 +343,27 @@
 
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
-      selection.addEventListener("change", function(){
-        var use_choice = $('#selection option:selected').text();
-        product_selection.innerHTML = '';
-        {% for pesticide in datas %};
-          if ("{{pesticide.use}}" == use_choice){
-            let option = document.createElement("option")
-            option.text = "{{pesticide.product_name}}"
-            option.value = {{pesticide.id}}
-            product_selection.appendChild(option)
-          };
-        {% endfor %};
-      });
+      {% if user.is_staff %}
+        selection.addEventListener("change", function(){
+          var use_choice = $('#selection option:selected').text();
+          product_selection.innerHTML = '';
+          {% for pesticide in datas %};
+            if ("{{pesticide.use}}" == use_choice){
+              let option = document.createElement("option")
+              option.text = "{{pesticide.product_name}}"
+              option.value = {{pesticide.id}}
+              product_selection.appendChild(option)
+            };
+            {% endfor %};
+          });
+
+        //---------------------- Modal Pesticide Popover initiator ------------------------
+        submit_product.addEventListener("click", function(){
+          $(function() {
+            $('[data-toggle="popover"]').popover()
+          })
 
 
-
-
-      //---------------------- Modal Pesticide Popover initiator ------------------------
-      submit_product.addEventListener("click", function(){
-        $(function() {
-          $('[data-toggle="popover"]').popover()
-        })
         // ---------------------- Ajax call------------------
         // ----------- pulls pesticide data and compares it product choice.  ithen populates the popover with the correct informaiton.-----
 
@@ -375,8 +390,6 @@
 
 
       // ---------------------- Modal REI set time ------------------------
-
-
 
       // function getPrettyDate(date) {
       //   let ampm = ''
@@ -476,7 +489,6 @@
           'end': JSONdate_rei,
           'pesticide_id': pesticide_id,
           'location_id': selected_location_id
-          ''
         }
         let config = {
           headers: {
@@ -488,6 +500,8 @@
           console.log(response.data)
         })
       })
+      {%endif%}
+
 
 
     </script>

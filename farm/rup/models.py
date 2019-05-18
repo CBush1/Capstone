@@ -48,7 +48,7 @@ class LocationPesticide(models.Model):
     pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
 
     def __str__(self):
         return self.location.name + ' ' + self.pesticide.product_name
