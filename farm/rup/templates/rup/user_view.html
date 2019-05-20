@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <title>Simple Polygon</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Farm Manager</title>
+    <style>
+
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+      #map {
+        height: 90%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .select_style{
+        margin: 10px;
+        width: 225px;
+        overflow-x: auto;
+      }
+
+      .option_style{
+        width: 200px;
+        overflow-x: scroll;
+        background-color: blue;
+      }
+
+      .submit_style{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 10px;
+      }
+
+      #selection{
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+      .rei{
+        display: flex;
+        flex-direction: row;
+      }
+      .rei * {
+        margin: 5px
+      }
+
+    </style>
+  </head>
+
+  <body = id="body">
+    <div id="user_div">
+      <ul class="sidebar-nav">
+        {% if user.is_authenticated %}
+       <li>User: {{ user.get_username }}</li>
+       <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+       {% else %}
+       <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+       {% endif %}
+      </ul>
+
+    </div>
+    <div id="map"></div>
+
+      <div class="user">
+
+        <!-- Modal -->
+        <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
+          <div class='modal-dialog modal-dialog-centered' role='document'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <h5 class='modal-title' id='SiteName'></h5>
+                <button id="cancel" type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                  <span aria-hidden='true'>&times;</span>
+                </button>
+              </div>
+              <div class='modal-body'>
+                <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
+                <div class='submit_style'>
+                  <h5>Purpose</h5>
+
+                  <p id="selection"> </p>
+
+
+                </div>
+                  <!-- {% for event in events %}
+                    <div>
+                        <p>start: {{ event.start }}</p>
+                        <h2>end: {{ event.end }}</h2>
+                        <p>pesticide{{ event.pesticide }}</p>
+                        <p>location{{event.location}}</p>
+                    </div>
+                  {% endfor %} -->
+
+
+
+
+                  <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
+                </div>
+                <div class="submit_style">
+                  <h5>Product</h5>
+                  <p id="product_selection"></p>
+                </div>
+                <hr>
+                <div>
+                  <h5>EPA registration number:</h5>
+                  <p id=epa_number> </p>
+                </div>
+                <hr>
+                <div class="rei">
+                  <!-- <input id="rei_input" type="number" name="rei" min="1" max="72" value=0> -->
+                  <div id="rei_para">
+                  </div>
+                </div>
+
+                <hr>
+                <button id="popover_product" type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
+                <hr>
+
+                <hr>
+                <button id="popover_product" type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Clean up after exposure" data-content="" >What to do in case of exposure</button>
+                <hr>
+
+                <h5>Extra resources</h5>
+                <p><a href="https://iaspub.epa.gov/apex/pesticides/f?p=PPLS:1" class="tooltip-test" title="Tooltip">Pesticide Label Search</a> and <a href="https://www.ohsu.edu/oregon-poison-center" class="tooltip-test" title="Tooltip">Oregon Poision Control</a>
+                <hr>
+                <br>
+                <input id="comment" type="text" name="comment" placeholder="Comments" />
+                <br>
+
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
+  </body>
+
+  <script type="text/javascript">
+
+    //================= Query Selectors========================================
+    let product_selection = document.querySelector("#product_selection")
+    let submit_product = document.querySelector("#submit_product")
+    let selection = document.querySelector("#selection")
+    let rei_para = document.getElementById("rei_para")
+    let epa_number = document.getElementById("epa_number")
+    let cancel = document.querySelector('#cancel')
+    let user = document.querySelector('.user')
+    let body = document.querySelector('#body')
+
+    // ================Styling=================================================
+    product_selection.classList.add('select_style')
+    selection.classList.add('select_style')
+
+
+    let selected_location_id = null
+    let selected_location_name = null
+    var color = 0;
+
+    function initMap() {
+      let locations = [
+      {% for location in locations %}
+        {
+          id: {{location.id}},
+          name: '{{location.name}}',
+          vertices: [{{location.verticies}}],
+          restricted: {% if location.is_restricted %}true{% else %}false {% endif %}
+        },
+      {% endfor %}
+      ]
+
+      var siteColors = ['000000', '#FF0000', '#7CFC00']
+
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 18,
+        minZoom: 18,
+        maxZoom: 18,
+        center: {lat: 45.147124, lng: -122.760927},
+        mapTypeId: 'satellite',
+        zoomControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: false,
+      })
+
+      for (let i=0; i<locations.length; i++) {
+        let location = locations[i];
+        var centroidLat = 0;
+        var centroidLng = 0;
+        let verticesArray = []
+        for (var j=0; j<location.vertices.length; j += 2){
+          let lat = location.vertices[j]
+          let lng = location.vertices[j+1]
+          verticesArray.push(new google.maps.LatLng(lat, lng))
+          centroidLat += lat;
+          centroidLng += lng;
+        }
+
+        var cent = new google.maps.LatLng(centroidLat/verticesArray.length, centroidLng/verticesArray.length);
+        var greenhousePolygon = new google.maps.Polygon({
+          paths: verticesArray,
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.5,
+          strokeWeight: 1,
+          fillColor: location.restricted? 'red': "#000000",
+          fillOpacity: 0.20,
+          position: cent,
+          map:map
+        });
+      if (location.restricted){
+        console.log(location.restricted)
+        click(greenhousePolygon, location);
+      } else {
+        click2(greenhousePolygon, location)
+      }
+      }
+    }
+
+    let events = [
+    {% for item in events %}
+      {
+        location_id: '{{item.location.id}}',
+        name: '{{item.location}}',
+        pesticide: '{{item.pesticide}}',
+        use: '{{item.pesticide.use}}',
+        rui: '{{item.pesticide.rui}}',
+        number: '{{item.pesticide.epa_number}}',
+        start: '{{item.start}}',
+        end: '{{item.end}}',
+      },
+    {% endfor %}
+  ]
+  console.log(events)
+
+      //---------------------- changes colors of polygons ----------------------
+      //------if color changes red, the modal becomes available by dblclick-----
+
+      function click(greenhousePolygon, location) {
+        var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
+            $('#map').dblclick(function (e) {
+              $('#exampleModalCenter').modal('toggle');
+              $("#SiteName").text(location.id)
+              let greenhouseChoice = location.id;
+              for (let i =0; i<events.length; i++){
+                 if (events[i]['location_id'] == greenhouseChoice){
+                   product_selection.innerText = events[i]['pesticide']
+                   selection.innerText = events[i]['use']
+                   rei_para.innerHTML = "<p>" + "Applied on: "+ events[i]['start'] + "</p>" + "<p>" +"Off limits until: "+ events[i]['end'] +"</p>"
+                   epa_number.innerText =  events[i]['number']
+                }
+              }
+            })
+          })
+        }
+        function click2(greenhousePolygon, location) {
+          var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
+            $('#map').dblclick(function (e) {
+              $('#exampleModalCenter').modal('toggle');
+              $("#SiteName").text('click2')
+              selection.innerText = null
+            })
+          })
+        }
+
+      //---------------------- Hides modal button --------------------------
+      $(".btn-primary").hide();
+      //---------------------- Modal Purpose selection ------------------------
+
+      //---------------------- Modal Pesticide Popover initiator ------------------------
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&callback=initMap&libraries=drawing,geometry" async defer></script>
+
+
+  </html>

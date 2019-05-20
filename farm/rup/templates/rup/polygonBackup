@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 
-
-
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,7 +9,6 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Farm Manager</title>
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'myapp/style.css' %}"/> -->
     </head>
     <style>
 
@@ -63,7 +60,7 @@
     </style>
   </head>
 
-  <body = id=>
+  <body = id="body">
     <div id="user_div">
       <ul class="sidebar-nav">
         {% if user.is_authenticated %}
@@ -81,10 +78,6 @@
     <div id="authenicator">
       {% if user.is_staff %}
         <div class="manager">
-          <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-            Launch demo modal
-          </button>
 
           <!-- Modal -->
           <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
@@ -100,13 +93,12 @@
                   <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
                   <div class='submit_style'>
                     <h5>Purpose</h5>
-                    <p id="selection"> {{uses.use}}</p>
+                    <select id="selection"></select>
                     <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
                   </div>
                   <div class="submit_style">
                     <h5>Product</h5>
-                    <select id="product_selection">
-                    </select>
+                    <select id="product_selection"></select>
                     <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
                   </div>
                   <hr>
@@ -121,7 +113,6 @@
                     <div id="rei_para">
                     </div>
                   </div>
-
 
                   <hr>
                   <button id="popover_product" type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
@@ -147,7 +138,7 @@
           </div>
         </div>
       </div>
-      {%else%}
+      {% else %}
       <div class="user">
 
         <!-- Modal -->
@@ -164,12 +155,12 @@
                 <!--This submission will take the pesticide selection and fill populate the fields in the modal with the information in the Pesticide of that specific chemical-->
                 <div class='submit_style'>
                   <h5>Purpose</h5>
-                  <p id="user_selection"></p>
+                  <p id="selection"> </p>
                   <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
                 </div>
                 <div class="submit_style">
                   <h5>Product</h5>
-                  <p id="user_product_selection"></p>
+                  <p id="product_selection"></p>
                 </div>
                 <hr>
                 <div>
@@ -178,12 +169,11 @@
                 </div>
                 <hr>
                 <div class="rei">
-                  <input id="rei_input" type="number" name="rei" min="1" max="72" value=0>
+                  <!-- <input id="rei_input" type="number" name="rei" min="1" max="72" value=0> -->
                   <button id="rei" type="button" value ="submit" name = "rei"> Submit </button>
                   <div id="rei_para">
                   </div>
                 </div>
-
 
                 <hr>
                 <button id="popover_product" type='button' class='btn btn-lg btn-danger' data-toggle='popover' title='Restricted use' data-content='' >Why is this dangerous</button>
@@ -220,14 +210,10 @@
   </body>
 
   <script type="text/javascript">
-  {% if user.is_staff %}
-  {% load admin %}
-  {%else%}
-  {% load user %}
-  {%endif%}
+
+
 
     //================= Query Selectors========================================
-    {% if user.is_staff %}
     let product_selection = document.querySelector("#product_selection")
     let submit_product = document.querySelector("#submit_product")
     let selection = document.querySelector("#selection")
@@ -236,17 +222,8 @@
     let number = document.getElementById("epa_number")
     let btn_save = document.querySelector('#btn_save')
     let cancel = document.querySelector('#cancel')
-    {% endif%}
-
-    //================= User Query Selectors========================================
-    let user_product_selection = document.querySelector("#product_selection")
-    let submit_product = document.querySelector("#submit_product")
-    let user_selection = document.querySelector("#selection")
-    let rei = document.getElementById("rei")
-    let rei_para = document.getElementById("rei_para")
-    let number = document.getElementById("epa_number")
-    let btn_save = document.querySelector('#btn_save')
-    let cancel = document.querySelector('#cancel')
+    let user = document.querySelector('.user')
+    let body = document.querySelector('#body')
 
 
 
@@ -256,9 +233,12 @@
     product_selection.classList.add('select_style')
     selection.classList.add('select_style')
 
+
+
     let selected_location_id = null
     var color = 0;
     function initMap() {
+
       let locations = [
       {% for location in locations %}
         {
@@ -311,9 +291,13 @@
         click(greenhousePolygon, location);
         {% if user.is_staff %}
           cancel_modal(greenhousePolygon)
+        {%else%}
+          user_click(greenhousePolygon, location)
         {%endif%}
       }
-    }
+
+
+
 
       //---------------------- changes colors of polygons ----------------------
       //------if color changes red, the modal becomes available by dblclick-----
@@ -332,12 +316,13 @@
           })
         })
       }
+      {% if user.is_staff %}
       function cancel_modal(greenhousePolygon, listener){
         cancel.addEventListener("click", function(){
           greenhousePolygon.setOptions({fillColor:"#000000"});
         })
       }
-
+      {% endif %}
 
 
       //---------------------- Hides modal button --------------------------
@@ -351,32 +336,46 @@
           option.value = {{use.id}}
           selection.appendChild(option)
         {%endfor%}
+      {% endif %}
 
-      {%endif%}
 
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
-      selection.addEventListener("change", function(){
-        var use_choice = $('#selection option:selected').text();
-        product_selection.innerHTML = '';
-        {% for pesticide in datas %};
-          if ("{{pesticide.use}}" == use_choice){
-            let option = document.createElement("option")
-            option.text = "{{pesticide.product_name}}"
-            option.value = {{pesticide.id}}
-            product_selection.appendChild(option)
-          };
-        {% endfor %};
-      });
+      {% if user.is_staff %}
+        selection.addEventListener("change", function(){
+          let use_choice = $('#selection option:selected').text();
+          product_selection.innerHTML = '';
+          {% for pesticide in datas %};
+            if ("{{pesticide.use}}" == use_choice){
+              let option = document.createElement("option")
+              option.text = "{{pesticide.product_name}}"
+              option.value = {{pesticide.id}}
+              product_selection.appendChild(option)
+            };
+          {% endfor %};
+        });
+      {% endif %}
+
+      function user_click(greenhousePolygon, location) {
+        var listener2 = google.maps.event.addListener(greenhousePolygon, function(){
+          if (location.restricted){
+            console.log(location["name"])
+          }
+        })
+      }
+
+
 
 
 
 
       //---------------------- Modal Pesticide Popover initiator ------------------------
-      submit_product.addEventListener("click", function(){
-        $(function() {
-          $('[data-toggle="popover"]').popover()
-        })
+      {% if user.is_staff %}
+        submit_product.addEventListener("click", function(){
+          $(function() {
+            $('[data-toggle="popover"]').popover()
+          })
+      {% endif %}
         // ---------------------- Ajax call------------------
         // ----------- pulls pesticide data and compares it product choice.  ithen populates the popover with the correct informaiton.-----
 
@@ -387,9 +386,9 @@
         }
         axios.get('{% url 'rup:get_product' %}', config)
         .then(function(response) {
-          var data = response.data;
-          var popover = $('.btn-danger').data('bs.popover');
-          var product_choice = $('#product_selection option:selected').text()
+          let data = response.data;
+          let popover = $('.btn-danger').data('bs.popover');
+          let product_choice = $('#product_selection option:selected').text()
           for (let i=0; i < data.products.length; i++) {
 
             if (product_choice == data.products[i].product_name){
@@ -399,7 +398,10 @@
             }
           }
         })
+      {% if user.is_staff %}
       })
+      {% endif %}
+
 
 
       // ---------------------- Modal REI set time ------------------------
@@ -515,10 +517,9 @@
           console.log(response.data)
         })
       })
-
-
+    }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&callback=initMap&libraries=drawing,geometry" async defer></script>
 
 
-</html>
+  </html>

@@ -19,12 +19,14 @@ def mylogin(request):
     password = request.POST['password']
     user = authenticate(username=username, password=password)
     if user is not None:
-        # if user.is_active:
         login(request, user)
-        return HttpResponseRedirect(reverse('rup:polygon'))
-    #     else:
-    #         # Return a 'disabled account' error message
-    #         ...
+        if user.is_staff:
+            return HttpResponseRedirect(reverse('rup:polygon'))
+        elif user.is_active:
+            return HttpResponseRedirect(reverse('rup:user_view'))
+    # else:
+        # Return a 'disabled account' error message
+            ...
     # else:
     #     # Return an 'invalid login' error message.
 
@@ -32,10 +34,7 @@ def mylogin(request):
 def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
-    pesticides=[]
     uses = []
-    polygons = []
-
     for i in range(1, (len(datas))):
         if datas[i].use != None:
             if datas[i].use != datas[i-1].use:
@@ -47,18 +46,8 @@ def polygon(request):
         'locations':locations,
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
     }
-    print(locations)
     return render(request, 'rup/polygon.html', context)
 
-def save_product(request):
-    data = json.loads(request.body)
-    product_name = data['product_name']
-    epa_number = data['epa_number']
-    rui = data['rui']
-    rei = data['rei']
-    product = Pesticide(product_name=product_name, epa_number=epa_number, rui=rui, rei=rei)
-    product.save()
-    return HttpResponse('ok')
 
 def get_product(request):
     data_num = 0
@@ -73,29 +62,30 @@ def get_product(request):
             'epa_number':pesticide.epa_number,
         })
         data_num += 1
+
     return JsonResponse(data)
 
-
 def modal(request):
-    # how to go from product name to django product id????
     data = json.loads(request.body)
-    print(data)
     location_id = data['location_id']
     pesticide_id = data['pesticide_id']
     user = request.user
     start = data['start']
     end = data['end']
     modal_data = LocationPesticide(location_id=location_id, pesticide_id=pesticide_id, start=start, end=end, user=user)
-
     modal_data.save()
-    print(modal_data)
+
     return HttpResponse('ok')
-#
-# def locations(request):
-#     locations = Location.objects.all()
-#     context = {
-#         'locations':locations,
-#     }
-#     print(locations[2])
-#
-#     return render(request, 'rup/polygon.html', context)
+
+@login_required
+def user_view(request):
+    events = LocationPesticide.objects.prefetch_related('pesticide', 'user', 'location')
+    locations = Location.objects.all()
+    
+    context = {
+        'events': events,
+        'locations': locations,
+        'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
+    }
+    print(events)
+    return render(request, 'rup/user_view.html', context)
