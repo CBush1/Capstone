@@ -17,18 +17,10 @@ class Name(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
+    license_no = models.IntegerField(blank=0)
 
     def __str__(self):
         return self.first_name
-
-class Applicator(models.Model):
-    applicator_name = models.ForeignKey(Name, on_delete=models.CASCADE)
-    date_applied = models.DateTimeField()
-    location_applied = models.TextField()
-
-    def __str__(self):
-        return self.applicator_name
-
 
 class Location(models.Model):
     name = models.CharField(max_length=200)
@@ -48,7 +40,7 @@ class LocationPesticide(models.Model):
     pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.location.name + ' ' + self.pesticide.product_name

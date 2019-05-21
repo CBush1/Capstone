@@ -36,11 +36,14 @@ def mylogin(request):
 def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
+    polylines = Location.objects.all()
     uses = []
     for i in range(1, (len(datas))):
         if datas[i].use != None:
             if datas[i].use != datas[i-1].use:
                 uses.append(datas[i])
+    for i in range((polylines)):
+        print(polylines[i].verticies)
 
     context = {
         'uses': uses,

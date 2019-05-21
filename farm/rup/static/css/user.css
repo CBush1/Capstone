@@ -1,0 +1,140 @@
+
+       html, body {
+         height: 100%;
+         margin: 0;
+         padding: 0;
+         background-color: #726471;
+       }
+
+      #map {
+        height: 85%;
+        width: 100%;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+
+      #user_interface{
+        width: 100%;
+        display: flex;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: space-between;
+      }
+
+      #user_interface li {
+        margin-left: 20px;
+        margin-top: 10px;
+        color: white;
+        list-style: None;
+        display: flex;
+      }
+      a {
+        color: white;
+      }
+       .modal-header *{
+         display: flex;
+         justify-content: center;
+      }
+      #cancel{
+        display: flex;
+        justify-content: flex-end;
+        width: 20%;
+        margin-left: 20px;
+      }
+
+      #product_selection{
+        width: 90%;
+        font-size: 15px
+      }
+      .select_style{
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      .option_style{
+        width: 200px;
+        overflow-x: scroll;
+        background-color: blue;
+      }
+
+      .info_style{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        display: inline-block;
+      }
+
+      .pesticide_purpose{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: space-between;
+      }
+      .pesticide_purpose *{
+        display: flex;
+        width: 50%;
+        flex-direction: column;
+        flex-wrap: wrap;
+        overflow-x: visible;
+      }
+      #selection{
+        display: flex;
+        justify-content: center;
+      }
+
+      .epa_rui{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      #epa_div{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 40%;
+      }
+      #epa_number{
+        display: flex;
+        justify-content: center;
+      }
+      #rui_div{
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        overflow-x: visible;
+      }
+      #rui{
+        display: flex;
+        text-align: center;
+      }
+      #rei{
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      #rei_para{
+        font-size: 20px;
+      }
+
+      #unrestricted{
+        font-size : 20px;
+        font-weight: bold;
+        width : 100%;
+      }
+      hr{
+        background-color: white;
+      }
+      .extra_resources{
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        /* width: 50%; */
+      }
+      .extra_resources h6{
+        text-align: center;
+      }

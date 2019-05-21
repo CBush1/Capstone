@@ -76,7 +76,7 @@
     <div id="map"></div>
 
     <div id="authenicator">
-      {% if user.is_staff %}
+
         <div class="manager">
 
           <!-- Modal -->
@@ -99,7 +99,7 @@
                   <div class="submit_style">
                     <h5>Product</h5>
                     <select id="product_selection"></select>
-                    <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Apply</button>
+                    <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Select</button>
                   </div>
                   <hr>
                   <div>
@@ -109,7 +109,7 @@
                   <hr>
                   <div class="rei">
                     <input id="rei_input" type="number" name="rei" min="1" max="72" value=0>
-                    <button id="rei" type="button" value ="submit" name = "rei"> Submit </button>
+                    <button id="rei" type="button" value ="submit" name = "rei"> Confirm </button>
                     <div id="rei_para">
                     </div>
                   </div>
@@ -200,7 +200,6 @@
       </div>
       </div>
 
-      {% endif %}
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -289,11 +288,7 @@
           map:map
         });
         click(greenhousePolygon, location);
-        {% if user.is_staff %}
-          cancel_modal(greenhousePolygon)
-        {%else%}
-          user_click(greenhousePolygon, location)
-        {%endif%}
+        cancel_modal(greenhousePolygon)
       }
 
 
@@ -303,58 +298,50 @@
       //------if color changes red, the modal becomes available by dblclick-----
 
       function click(greenhousePolygon, location) {
-
-          var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
-          {% if user.is_staff %}
-            console.log(location["name"])
-            greenhousePolygon.setOptions({fillColor:"#FF0000"});
-          {%endif%}
-        $('#map').on('dblclick', function (e) {
-          $('#exampleModalCenter').modal('toggle');
-          $("#SiteName").text(location.name)
-          selected_location_id = location.id
+        var listener = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
+          console.log(location["name"])
+          greenhousePolygon.setOptions({fillColor:"#FF0000"});
+          $('#map').on('dblclick', function (e) {
+            $('#exampleModalCenter').modal('toggle');
+            $("#SiteName").text(location.name)
+            selected_location_id = location.id
           })
         })
       }
-      {% if user.is_staff %}
+
       function cancel_modal(greenhousePolygon, listener){
         cancel.addEventListener("click", function(){
           greenhousePolygon.setOptions({fillColor:"#000000"});
         })
       }
-      {% endif %}
-
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
-      {% if user.is_staff %}
-        let option = null
-        {% for use in uses %}
-          option = document.createElement("option")
-          option.text = "{{use.use}}"
-          option.value = {{use.id}}
-          selection.appendChild(option)
-        {%endfor%}
-      {% endif %}
 
+      let option = null
+      {% for use in uses %}
+        option = document.createElement("option")
+        option.text = "{{use.use}}"
+        option.value = {{use.id}}
+        selection.appendChild(option)
+      {%endfor%}
 
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
-      {% if user.is_staff %}
-        selection.addEventListener("change", function(){
-          let use_choice = $('#selection option:selected').text();
-          product_selection.innerHTML = '';
-          {% for pesticide in datas %};
-            if ("{{pesticide.use}}" == use_choice){
-              let option = document.createElement("option")
-              option.text = "{{pesticide.product_name}}"
-              option.value = {{pesticide.id}}
-              product_selection.appendChild(option)
-            };
-          {% endfor %};
-        });
-      {% endif %}
+
+      selection.addEventListener("change", function(){
+        let use_choice = $('#selection option:selected').text();
+        product_selection.innerHTML = '';
+        {% for pesticide in datas %};
+          if ("{{pesticide.use}}" == use_choice){
+            let option = document.createElement("option")
+            option.text = "{{pesticide.product_name}}"
+            option.value = {{pesticide.id}}
+            product_selection.appendChild(option)
+          };
+        {% endfor %};
+      });
 
       function user_click(greenhousePolygon, location) {
         var listener2 = google.maps.event.addListener(greenhousePolygon, function(){
@@ -364,18 +351,12 @@
         })
       }
 
-
-
-
-
-
       //---------------------- Modal Pesticide Popover initiator ------------------------
-      {% if user.is_staff %}
+
         submit_product.addEventListener("click", function(){
           $(function() {
             $('[data-toggle="popover"]').popover()
           })
-      {% endif %}
         // ---------------------- Ajax call------------------
         // ----------- pulls pesticide data and compares it product choice.  ithen populates the popover with the correct informaiton.-----
 
@@ -398,7 +379,7 @@
             }
           }
         })
-      {% if user.is_staff %}
+
       })
       {% endif %}
 

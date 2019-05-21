@@ -1,0 +1,108 @@
+
+ html, body {
+   height: 100%;
+   margin: 0;
+   padding: 0;
+   background-color: #726471;
+ }
+
+#map {
+  height: 85%;
+  width: 100%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#user_interface{
+  width: 100%;
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+}
+
+#user_interface li {
+  margin-left: 20px;
+  margin-top: 10px;
+  color: white;
+  list-style: None;
+  display: flex;
+}
+
+a {
+  color: #E5E5D8;
+}
+.modal-header{
+  background-color: #7FBF7F;
+}
+
+.modal-header *{
+  display: flex;
+  justify-content: center;
+}
+
+#cancel{
+  display: flex;
+  justify-content: flex-end;
+  width: 20%;
+  margin-left: 20px;
+}
+
+#modal_background{
+  background-color: #E5E5D8;
+}
+
+
+.select_style{
+  margin: 10px;
+  width: 225px;
+  overflow-x: auto;
+}
+
+.option_style{
+  width: 200px;
+  overflow-x: scroll;
+  background-color: blue;
+}
+
+.submit_style{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px;
+}
+
+#selection{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.rei{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.rei * {
+  margin: 5px
+}
+#rei_para{
+  padding: 5px 10px 5px; 
+}
+
+.extra_resources{
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  /* width: 50%; */
+}
+.extra_resources h6{
+  text-align: center;
+}
+
+.modal-footer{
+  background-color: #7FBF7F;
+}
