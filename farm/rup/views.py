@@ -4,6 +4,8 @@ from .models import Pesticide, Location, LocationPesticide
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.utils import timezone
+
 
 import json
 import datetime
@@ -79,9 +81,11 @@ def modal(request):
 
 @login_required
 def user_view(request):
-    events = LocationPesticide.objects.prefetch_related('pesticide', 'user', 'location')
+    # events = LocationPesticide.objects.prefetch_related('pesticide', 'user', 'location')
+    now = timezone.now()
+    events = LocationPesticide.objects.filter(start__lte=now, end__gte=now)
     locations = Location.objects.all()
-    
+
     context = {
         'events': events,
         'locations': locations,
