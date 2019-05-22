@@ -3,55 +3,82 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
     <style>
-      #login {
-        background-color: tan;
-      }
+    #wrapper{
+      font-family: 'Fira Sans', sans-serif;
+    }
+    #login{
+      width: 25%;
+      position: fixed;
+      right: 20px;
+      top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    #login *{
+      /* margin:10px; */
+      /* padding:10px; */
+    }
+    #title{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 40px;
+    }
+    p {
+      font-family: 'Fira Sans', sans-serif;
+    }
+
     </style>
   </head>
   <body>
+    {% block content %}
 
+    {% if form.errors %}
+      <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+    {% if next %}
+      {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+      {% else %}
+        <p>Please login to see this page.</p>
+      {% endif %}
+    {% endif %}
+    <div id="wrapper">
+      <div id="login">
+        <div id="sign_in">
+          <form method="post" action="{% url 'rup:mylogin' %}">
+          {% csrf_token %}
+          <table>
+          <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+          </tr>
+          <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+          </tr>
+          </table>
+          <input type="submit" value="login" />
+          <input type="hidden" name="user_match" value="{{ user_match }}" />
+          </form>
+        </div>
+        <div id="lost_pass">
+          {# Assumes you setup the password_reset view in your URLconf #}
+          <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+        </div>
+        {% endblock %}
+      </div>
+      <div id="title">
+        <h1> Pester</h1>
+      </div>
+
+
+
+    </div>
   </body>
 </html>
-
-
-{% block content %}
-
-{% if form.errors %}
-  <p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{% if next %}
-  {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-  {% else %}
-    <p>Please login to see this page.</p>
-  {% endif %}
-{% endif %}
-<div id="login">
-  <form method="post" action="{% url 'rup:mylogin' %}">
-  {% csrf_token %}
-  <table>
-
-  <tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-  </tr>
-
-  <tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-  </tr>
-  </table>
-
-  <input type="submit" value="login" />
-  <input type="hidden" name="user_match" value="{{ user_match }}" />
-  </form>
-</div>
-
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
-{% endblock %}

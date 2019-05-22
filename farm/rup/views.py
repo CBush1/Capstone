@@ -36,14 +36,11 @@ def mylogin(request):
 def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
-    polylines = Location.objects.all()
     uses = []
     for i in range(1, (len(datas))):
         if datas[i].use != None:
             if datas[i].use != datas[i-1].use:
                 uses.append(datas[i])
-    for i in range((polylines)):
-        print(polylines[i].verticies)
 
     context = {
         'uses': uses,
@@ -88,11 +85,10 @@ def user_view(request):
     now = timezone.now()
     events = LocationPesticide.objects.filter(start__lte=now, end__gte=now)
     locations = Location.objects.all()
-
+    
     context = {
         'events': events,
         'locations': locations,
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
     }
-    print(events)
     return render(request, 'rup/user_view.html', context)

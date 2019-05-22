@@ -16,7 +16,6 @@
         transform: translate(-50%, -50%);
       }
 
-
       #user_interface{
         width: 100%;
         display: flex;
@@ -39,102 +38,80 @@
          display: flex;
          justify-content: center;
       }
-      #cancel{
+
+      #cancel {
         display: flex;
         justify-content: flex-end;
         width: 20%;
         margin-left: 20px;
       }
 
-      #product_selection{
-        width: 90%;
-        font-size: 15px
-      }
-      .select_style{
-        display: inline-block;
-        margin-bottom: 10px;
-      }
-
-      .option_style{
-        width: 200px;
-        overflow-x: scroll;
-        background-color: blue;
-      }
-
-      .info_style{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        display: inline-block;
-      }
-
-      .pesticide_purpose{
+      .pesticide_purpose {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        align-content: space-between;
+        width: 100%;
       }
-      .pesticide_purpose *{
-        display: flex;
+      #purpose {
         width: 50%;
-        flex-direction: column;
-        flex-wrap: wrap;
-        overflow-x: visible;
-      }
-      #selection{
         display: flex;
-        justify-content: center;
+        flex-wrap: wrap;
+        text-align: center;
       }
 
+      #pesticide {
+        width: 50%;
+        display: flex;
+        flex-wrap: wrap;
+        text-align: center;
+      }
       .epa_rui{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        align-items: flex-start;
+        width: 100%;
       }
-      #epa_div{
+
+      #epa_div {
         display: flex;
-        flex-direction: column;
         flex-wrap: wrap;
+        text-align: center;
         width: 40%;
       }
-      #epa_number{
+      #epa_number {
         display: flex;
         justify-content: center;
       }
-      #rui_div{
-        width: 60%;
+
+      #rui_div {
         display: flex;
-        flex-direction: column;
         flex-wrap: wrap;
-        overflow-x: visible;
-      }
-      #rui{
-        display: flex;
         text-align: center;
+        width: 60%;
       }
-      #rei{
+
+      #rei {
         text-align: center;
         margin-bottom: 10px;
       }
-      #rei_para{
+      #rei_para {
         font-size: 20px;
       }
 
-      #unrestricted{
+      #unrestricted {
         font-size : 20px;
         font-weight: bold;
         width : 100%;
       }
-      hr{
+      hr {
         background-color: white;
       }
-      .extra_resources{
+      .extra_resources {
         display: flex;
         flex-direction: column;
         margin: auto;
         /* width: 50%; */
       }
-      .extra_resources h6{
+      .extra_resources h6 {
         text-align: center;
       }

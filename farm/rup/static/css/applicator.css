@@ -1,4 +1,4 @@
-
+/*
  html, body {
    height: 100%;
    margin: 0;
@@ -29,12 +29,17 @@
   margin-top: 10px;
   color: white;
   list-style: None;
-  display: flex;
 }
 
 a {
   color: #E5E5D8;
 }
+
+#login{
+  display: flex;
+  justify-content: flex-end;
+}
+
 .modal-header{
   background-color: #7FBF7F;
 }
@@ -90,7 +95,10 @@ a {
   margin: 5px
 }
 #rei_para{
-  padding: 5px 10px 5px; 
+  padding: 5px 10px 5px;
+}
+#rei_duration{
+  width: 20%;
 }
 
 .extra_resources{
@@ -99,10 +107,10 @@ a {
   margin: auto;
   /* width: 50%; */
 }
-.extra_resources h6{
+/* .extra_resources h6{
   text-align: center;
 }
 
 .modal-footer{
   background-color: #7FBF7F;
-}
+} */ 
