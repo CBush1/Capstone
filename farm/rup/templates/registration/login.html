@@ -2,19 +2,27 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title></title>
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
     <style>
-    #wrapper{
+    html, body{
       font-family: 'Fira Sans', sans-serif;
+      background-color: #E5E5D8;
+      height: 100%;
+      width: 100%;
     }
     #login{
+      margin: 0% 20%;
       display: flex;
       justify-content: center;
       align-content: center;
-      display: flex;
       flex-wrap: wrap;
       flex-direction: column;
+      border-radius: 25px;
+      box-shadow: inset 0px 0px 20px black;
+      background-color: #B1C9CC;
     }
     #login *{
       /* margin:10px; */
@@ -22,15 +30,31 @@
     }
     #title{
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       font-size: 50px;
-      text-shadow: ;
+    }
+    #title *{
+      margin: 29px 0px;
+
+    }
+    #sign_in{
+      display: flex;
+      justify-content: center;
+    }
+    #lost_pass{
+      display: flex;
+      justify-content: center;
+
+
+
     }
     p {
       font-family: 'Fira Sans', sans-serif;
     }
+
 
     input{
       width: 80px;
@@ -42,6 +66,10 @@
 
       font-family: 'Fira Sans', sans-serif;
       font-size: 15px;
+    }
+    a {
+      text-decoration: none;
+      color: black;
     }
 
     </style>
@@ -64,7 +92,7 @@
     <div id="wrapper">
       <div id="login">
         <div id="title">
-          <h1> Pester</h1>
+          <h1> Pest'r</h1>
         </div>
         <div id="sign_in">
           <form method="post" action="{% url 'rup:mylogin' %}">
@@ -88,12 +116,7 @@
           <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
         </div>
         <!-- {% endblock %} -->
-
       </div>
-
-
-
-
     </div>
   </body>
 </html>

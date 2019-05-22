@@ -6,7 +6,6 @@ from . import views
 
 app_name ='rup'
 urlpatterns = [
-    path('', views.index, name='index'),
     path('polygon/', views.polygon, name='polygon'),
     path('get_product/', views.get_product, name='get_product'),
     path('mylogin/', views.mylogin, name='mylogin'),

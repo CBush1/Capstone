@@ -10,12 +10,6 @@ from django.utils import timezone
 import json
 import datetime
 
-def index(request):
-    context = {
-    'message' : 'Oh dear'
-    }
-    return render(request, 'rup/index.html/', context)
-
 def mylogin(request):
     username = request.POST['username']
     password = request.POST['password']
@@ -85,7 +79,7 @@ def user_view(request):
     now = timezone.now()
     events = LocationPesticide.objects.filter(start__lte=now, end__gte=now)
     locations = Location.objects.all()
-    
+
     context = {
         'events': events,
         'locations': locations,

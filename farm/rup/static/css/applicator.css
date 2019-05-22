@@ -104,7 +104,7 @@ a {
   width: 34%;
 } */
 
-#rei_div{
+/* #rei_div{
   display: flex;
   flex-direction: row;
 }
@@ -121,14 +121,14 @@ a {
 }
 .rei *{
   margin: 5px
-}
+} */
 
 .extra_resources{
   display: flex;
   flex-direction: column;
   margin: auto;
-  /* width: 50%; */
 }
+
 .extra_resources h6{
   text-align: center;
 }
@@ -137,6 +137,4 @@ a {
   background-color: #7FBF7F;
 }
 .btn-secondary:last-child{
-
-
 }

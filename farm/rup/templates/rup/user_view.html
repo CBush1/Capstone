@@ -4,7 +4,6 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="utf-8">
-    <title>Simple Polygon</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/user.css' %}">
@@ -30,7 +29,6 @@
     </header>
 
     <div id="map"></div>
-
       <div class="user">
         <!-- Modal -->
         <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
@@ -49,7 +47,10 @@
 
                 <div class="info_style" id="rei">
                   <h4 id='modal_header'></h4>
-                  <div id="rei_para"></div>
+                  <div id="rei_para">
+                    <p id="text1"></p>
+                    <p id="text2"></p>
+                  </div>
                 </div>
                 <hr>
                 <div class="pesticide_purpose">
@@ -109,10 +110,17 @@
     let modal_background = document.querySelector('#modal_background')
     let info_style = document.querySelectorAll('.info_style')
     let unrestricted = document.querySelector('#unrestricted')
+    let text1 = document.querySelector('#text1')
+    let text2 = document.querySelector('#text2')
+    // let SiteName = document.querySelector('#SiteName')
 
     // ================Styling=================================================
     product_selection.classList.add('select_style')
     selection.classList.add('select_style')
+    // text1.style.textAlign = "center"
+    // text2.style.textAlign = "center"
+    // SiteName.style.textAlign = "center"
+
 
     let selected_location_id = null
     var color = 0;
@@ -202,14 +210,14 @@
           let greenhouseChoice = location.id;
           for (let i =0; i<events.length; i++){
              if (events[i]['location_id'] == greenhouseChoice){
-               console.log('found event for location!')
+               // console.log('found event for location!')
                console.log(events[i]['location_id'])
                product_selection.innerText = events[i]['pesticide']
                selection.innerText = events[i]['use']
-               rei_para.innerHTML = "<p>" + "Applied on: "+ events[i]['start'] + "</p>" + "<p>" +"Off limits until: "+ events[i]['end'] +"</p>"
+               text1.innerText = "Applied on: "+ events[i]['start']
+               text2.innerText = "Off limits until: "+ events[i]['end']
                epa_number.innerText =  events[i]['number']
                rui.innerText = events[i]['rui']
-               console.log(events)
                modal_header[0].innerText = 'Restricted entry interval:'
                modal_header[1].innerText = 'Purpose:'
                modal_header[2].innerText = 'Product:'
@@ -220,21 +228,21 @@
                  info_style[i].style.display = "block";
                }
                modal_background.style.backgroundColor = '#FF5E5E'
+                }
+              }
+            })
+          }
+        function Unrestricted_polygon(greenhousePolygon, location) {
+          let listener2 = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
+            $('#exampleModalCenter').modal('toggle');
+            $("#SiteName").text(location.name);
+            for (let i = 0; i < info_style.length; i++){
+              info_style[i].style.display = "none";
             }
-          }
-        })
-      }
-      function Unrestricted_polygon(greenhousePolygon, location) {
-        let listener2 = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
-          $('#exampleModalCenter').modal('toggle');
-          $("#SiteName").text(location.name);
-          for (let i = 0; i < info_style.length; i++){
-            info_style[i].style.display = "none";
-          }
-          unrestricted.style.display = "block";
-          modal_background.style.backgroundColor = '#B1C9CC';
-        })
-      }
+            unrestricted.style.display = "block";
+            modal_background.style.backgroundColor = '#B1C9CC';
+          })
+        }
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();

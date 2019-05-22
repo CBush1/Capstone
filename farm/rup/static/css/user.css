@@ -34,10 +34,11 @@
       a {
         color: white;
       }
-       .modal-header *{
+       .modal-header * {
          display: flex;
          justify-content: center;
       }
+
 
       #cancel {
         display: flex;
@@ -73,33 +74,34 @@
       }
 
       #epa_div {
-        display: flex;
+        display: flex; */
         flex-wrap: wrap;
         text-align: center;
         width: 40%;
       }
-      #epa_number {
-        display: flex;
-        justify-content: center;
-      }
-
       #rui_div {
         display: flex;
         flex-wrap: wrap;
         text-align: center;
         width: 60%;
       }
-      #rei_div{
+
+      #rei_div {
         display: flex;
         flex-direction: row;
       }
       #rei {
         display: block;
-        /* text-align: center; */
-        /* margin-bottom: 10px; */
+        text-align: center;
       }
+
       #rei_para {
         font-size: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 10px;
       }
 
       #unrestricted {
@@ -107,6 +109,7 @@
         font-weight: bold;
         width : 100%;
       }
+
       hr {
         background-color: white;
       }

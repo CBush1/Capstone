@@ -36,6 +36,7 @@ class Location(models.Model):
         return False
 
 class LocationPesticide(models.Model):
+    """Many locations or pesticides, one LocationPesticide event"""
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
     start = models.DateTimeField(null=True)
