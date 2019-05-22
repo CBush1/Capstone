@@ -9,6 +9,8 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/applicator.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
+
     <title>Farm Manager</title>
   </head>
 
@@ -60,10 +62,12 @@
             <div class="rei">
               <div id="rei_duration">
                 <h5>REI duration</h5>
-                <input id="rei_input" type="number" name="rei" min="1" max="1000" value=0>
-                <button id="rei" type="button" value ="submit" name = "rei"> Confirm </button>
-              </div>
-              <div id="rei_para">
+                <div id="rei_div">
+                  <input id="rei_input" type="number" name="rei" min="1" max="1000" value=0>
+                  <button id="rei" type="button" value ="submit" name = "rei"> Confirm </button>
+                  <div id="rei_para">
+                  </div>
+                </div>
               </div>
             </div>
             <br>
@@ -75,7 +79,7 @@
             <div class = "extra_resources">
               <h6>Extra resources</h6>
               <p><a href="https://iaspub.epa.gov/apex/pesticides/f?p=PPLS:1" class="tooltip-test" title="Tooltip">Pesticide Label Search</a> and <a href="https://www.ohsu.edu/oregon-poison-center" class="tooltip-test" title="Tooltip">Oregon Poision Control</a>
-              <div>
+              <div id="post_application_btn">
                 <button id="btn_save" type="button" data-dismiss="modal" class="btn btn-secondary">Post Application</button>
               </div>
             </div>
@@ -106,6 +110,7 @@
     // ================Styling=================================================
     product_selection.classList.add('select_style')
     selection.classList.add('select_style')
+    // rei_div.style.height='15px'
 
     let selected_location_id = null
 

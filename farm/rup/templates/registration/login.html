@@ -9,12 +9,12 @@
       font-family: 'Fira Sans', sans-serif;
     }
     #login{
-      width: 25%;
-      position: fixed;
-      right: 20px;
-      top: 10px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
       display: flex;
       flex-wrap: wrap;
+      flex-direction: column;
     }
     #login *{
       /* margin:10px; */
@@ -25,16 +25,29 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      font-size: 40px;
+      font-size: 50px;
+      text-shadow: ;
     }
     p {
       font-family: 'Fira Sans', sans-serif;
     }
 
+    input{
+      width: 80px;
+      height: 25px;
+      font-family: 'Fira Sans', sans-serif;
+      font-size: 15px;
+    }
+    input *{
+
+      font-family: 'Fira Sans', sans-serif;
+      font-size: 15px;
+    }
+
     </style>
   </head>
   <body>
-    {% block content %}
+    <!-- {% block content %}
 
     {% if form.errors %}
       <p>Your username and password didn't match. Please try again.</p>
@@ -47,9 +60,12 @@
       {% else %}
         <p>Please login to see this page.</p>
       {% endif %}
-    {% endif %}
+    {% endif %} -->
     <div id="wrapper">
       <div id="login">
+        <div id="title">
+          <h1> Pester</h1>
+        </div>
         <div id="sign_in">
           <form method="post" action="{% url 'rup:mylogin' %}">
           {% csrf_token %}
@@ -71,11 +87,10 @@
           {# Assumes you setup the password_reset view in your URLconf #}
           <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
         </div>
-        {% endblock %}
+        <!-- {% endblock %} -->
+
       </div>
-      <div id="title">
-        <h1> Pester</h1>
-      </div>
+
 
 
 
