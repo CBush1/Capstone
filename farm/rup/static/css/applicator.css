@@ -16,28 +16,43 @@
   transform: translate(-50%, -50%);
 }
 
-#user_interface{
-  width: 100%;
+#applicator_div {
+  display: flex;
+  flex-direction: row
+}
+
+#app_name {
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  font-size: 30px;
+  font-weight: bold;
+  color: #E5E5D8;
+}
+
+#user_interface {
+  width: 80%;
   display: flex;
   display: flex;
   flex-wrap: wrap;
   align-content: space-between;
+  color: #E5E5D8;
 }
 
 #user_interface li {
   margin-left: 20px;
   margin-top: 10px;
-  color: white;
+  color: #E5E5D8;
   list-style: None;
+}
+#user_interface:last-child {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
 }
 
 a {
   color: #E5E5D8;
-}
-
-#login{
-  display: flex;
-  justify-content: flex-end;
 }
 
 .modal-header{

@@ -1,124 +1,145 @@
 
-       html, body {
-         height: 100%;
-         margin: 0;
-         padding: 0;
-         background-color: #726471;
-       }
+ html, body {
+   height: 100%;
+   margin: 0;
+   padding: 0;
+   background-color: #726471;
+ }
 
-      #map {
-        height: 85%;
-        width: 100%;
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
+#map {
+  height: 85%;
+  width: 100%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-      #user_interface{
-        width: 100%;
-        display: flex;
-        display: flex;
-        flex-wrap: wrap;
-        align-content: space-between;
-      }
+#applicator_div {
+  display: flex;
+  flex-direction: row
+}
 
-      #user_interface li {
-        margin-left: 20px;
-        margin-top: 10px;
-        color: white;
-        list-style: None;
-        display: flex;
-      }
-      a {
-        color: white;
-      }
-       .modal-header * {
-         display: flex;
-         justify-content: center;
-      }
+#app_name {
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  font-size: 30px;
+  font-weight: bold;
+  color: #E5E5D8;
+}
+
+#user_interface {
+  width: 80%;
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  color: #E5E5D8;
+}
+
+#user_interface li {
+  margin-left: 20px;
+  margin-top: 10px;
+  color: #E5E5D8;
+  list-style: None;
+}
+
+#user_interface:last-child {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
+a {
+  color: #E5E5D8;
+}
+ .modal-header * {
+   display: flex;
+   justify-content: center;
+}
 
 
-      #cancel {
-        display: flex;
-        justify-content: flex-end;
-        width: 20%;
-        margin-left: 20px;
-      }
+#cancel {
+  display: flex;
+  justify-content: flex-end;
+  width: 20%;
+  margin-left: 20px;
+}
 
-      .pesticide_purpose {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-      }
-      #purpose {
-        width: 50%;
-        display: flex;
-        flex-wrap: wrap;
-        text-align: center;
-      }
+.pesticide_purpose {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+#purpose {
+  width: 40%;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
 
-      #pesticide {
-        width: 50%;
-        display: flex;
-        flex-wrap: wrap;
-        text-align: center;
-      }
-      .epa_rui{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-      }
+#pesticide {
+  width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.epa_rui{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
 
-      #epa_div {
-        display: flex; */
-        flex-wrap: wrap;
-        text-align: center;
-        width: 40%;
-      }
-      #rui_div {
-        display: flex;
-        flex-wrap: wrap;
-        text-align: center;
-        width: 60%;
-      }
+#epa_div {
+  display: flex; */
+  flex-wrap: wrap;
+  text-align: center;
+  width: 40%;
+}
+#rui_div {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  width: 60%;
+}
 
-      #rei_div {
-        display: flex;
-        flex-direction: row;
-      }
-      #rei {
-        display: block;
-        text-align: center;
-      }
+#rei_div {
+  display: flex;
+  flex-direction: row;
+}
+#rei {
+  display: block;
+  text-align: center;
+}
 
-      #rei_para {
-        font-size: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        text-align: center;
-        margin-bottom: 10px;
-      }
+#rei_para {
+  font-size: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-      #unrestricted {
-        font-size : 20px;
-        font-weight: bold;
-        width : 100%;
-      }
+#unrestricted {
+  font-size : 20px;
+  font-weight: bold;
+  width : 100%;
+}
 
-      hr {
-        background-color: white;
-      }
-      .extra_resources {
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-        /* width: 50%; */
-      }
-      .extra_resources h6 {
-        text-align: center;
-      }
+hr {
+  background-color: white;
+}
+.extra_resources {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  /* width: 50%; */
+}
+.extra_resources h6 {
+  text-align: center;
+}

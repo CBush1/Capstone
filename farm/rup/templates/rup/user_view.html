@@ -9,19 +9,21 @@
     <link rel="stylesheet" href="{% static 'css/user.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
 
-    <title>Farm Manager</title>
+    <title>Farm View</title>
   </head>
 
   <body id="body">
     <header id = "header">
-      <div id="user_div">
+      <div id="applicator_div">
+        <div id="app_name">Pest'r
+        </div>
         <ul class="sidebar-nav"  id="user_interface">
           {% if user.is_authenticated %}
          <li>User: {{ user.get_username }}</li>
          <div id="login">
-         <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
-         {% else %}
-         <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+           <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+           {% else %}
+           <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
         </div>
          {% endif %}
         </ul>

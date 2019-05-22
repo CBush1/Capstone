@@ -1,7 +1,7 @@
 
 
 import os
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -95,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
+
 
 TIME_ZONE = 'US/Pacific'
 
@@ -105,17 +105,22 @@ USE_L10N = True
 
 USE_TZ = True
 
-LANGUAGES = (
-    ('en-us', _('English')),
-    ('sp-sp', _('Spanish')),
-)
+USE_I18N = True
 
 LANGUAGE_CODE = 'en-us'
 
+LANGUAGES = (
+    ('en-us', _('English')),
+    ('es', _('Spanish')),
+)
+
 
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
 LOGIN_REDIRECT_URL = '/'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

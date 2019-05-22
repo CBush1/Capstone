@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="utf-8">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/applicator.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
-
     <title>Farm Manager</title>
   </head>
 
   <body = id="body">
     <header id = "header">
       <div id="applicator_div">
+        <div id="app_name">Pest'r
+        </div>
         <ul class="sidebar-nav"  id="user_interface">
           {% if user.is_authenticated %}
          <li>User: {{ user.get_username }}</li>
@@ -30,6 +30,7 @@
     </header>
 
     <div id="map"></div>
+    <div id="restricted_div">
     <!-- Modal -->
     <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
       <div class='modal-dialog modal-dialog-centered' role='document'>
@@ -104,6 +105,7 @@
     let cancel = document.querySelector('#cancel')
     let user = document.querySelector('.user')
     let body = document.querySelector('#body')
+    let restricted_div = document.querySelector('#restricted_div')
 
 
     // ================Styling=================================================
@@ -163,14 +165,14 @@
           map:map
         });
 
-        click(greenhousePolygon, location);
+        set_restriction(greenhousePolygon, location);
         cancel_modal(greenhousePolygon, location)
       }
 
       //---------------------- changes colors of polygons ----------------------
       //------if color changes red, the modal becomes available by dblclick-----
 
-      function click(greenhousePolygon, location) {
+      function set_restriction(greenhousePolygon, location) {
         var listener = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
           greenhousePolygon.setOptions({fillColor:'#FF0000'});
           $('#exampleModalCenter').modal('toggle');
@@ -326,6 +328,10 @@
         })
       })
     }
+
+
+
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&callback=initMap&libraries=drawing,geometry" async defer></script>
   </html>
