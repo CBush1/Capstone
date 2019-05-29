@@ -26,6 +26,13 @@ def mylogin(request):
     # else:
     #     # Return an 'invalid login' error message.
 
+def newfarm(request):
+    context = {
+        'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE']
+    }
+    return render(request, 'rup/newfarm.html', context)
+
+
 @login_required
 def polygon(request):
     datas = Pesticide.objects.order_by('use')

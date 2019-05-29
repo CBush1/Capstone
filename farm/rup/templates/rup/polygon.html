@@ -30,8 +30,10 @@
     </header>
 
     <div id="map"></div>
+
     <div id="restricted_div">
     <!-- Modal -->
+
     <div class='modal fade' id='exampleModalCenter' tabindex='-1' role='dialog' aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
       <div class='modal-dialog modal-dialog-centered' role='document'>
         <div class='modal-content'>
@@ -106,6 +108,7 @@
     let user = document.querySelector('.user')
     let body = document.querySelector('#body')
     let restricted_div = document.querySelector('#restricted_div')
+    let location_name = document.querySelector('#location_name')
 
 
     // ================Styling=================================================
@@ -131,7 +134,7 @@
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 18,
         minZoom: 18,
-        maxZoom: 18,
+        maxZoom: 20,
         center: {lat: 45.147124, lng: -122.760927},
         mapTypeId: 'satellite',
         zoomControl: false,
@@ -165,15 +168,27 @@
           map:map
         });
 
+        // var drawingManager = new google.maps.drawing.DrawingManager({
+        //   drawingMode: google.maps.drawing.OverlayType.MARKER,
+        //   drawingControl: true,
+        //   drawingControlOptions: {
+        //     position: google.maps.ControlPosition.TOP_CENTER,
+        //     drawingModes: [ 'polygon', 'rectangle']
+        //   }
+        // });
+
+
+
         set_restriction(greenhousePolygon, location);
         cancel_modal(greenhousePolygon, location)
       }
 
+      // drawingManager.setMap(map);
       //---------------------- changes colors of polygons ----------------------
       //------if color changes red, the modal becomes available by dblclick-----
 
       function set_restriction(greenhousePolygon, location) {
-        var listener = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
+        var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
           greenhousePolygon.setOptions({fillColor:'#FF0000'});
           $('#exampleModalCenter').modal('toggle');
           $("#SiteName").text(location.name)
@@ -188,6 +203,8 @@
           }
         })
       }
+
+
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
@@ -328,6 +345,32 @@
         })
       })
     }
+
+    // ---------------Location Data -------------------------------------------
+
+//     let data = {
+//       'polyBounds': JSONdate,
+//       'end': JSONdate_rei,
+//       'pesticide_id': pesticide_id,
+//       'location_id': selected_location_id
+//     }
+//     let config = {
+//       headers: {
+//         'X-CSRFToken': '{{ csrf_token }}'
+//       }
+//     }
+//     axios.post("{% url 'rup:modal' %}", data, config)
+//     .then(function(response) {
+//       console.log(response.data)
+//     })
+//   })
+// }
+
+
+
+
+
+
 
 
 

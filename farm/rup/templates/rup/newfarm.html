@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/newfarm.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
+    <title>Farm Manager</title>
+  </head>
+
+  <body = id="body">
+    <header id = "header">
+      <div id="applicator_div">
+        <div id="app_name">Welcome to Pest'r!</div>
+      </div>
+    </header>
+    <div id="address_div">
+      <input id="pac-input" class="controls" type="text" placeholder="Find your address.">
+    </div>
+
+    <div id="map"></div>
+    <div id="drawing_div">
+      <button class="button" id ="drawing_button">Highlight your farm</button>
+      <button class="button" id ="save_button">Save structure</button>
+      <button class="button" id ="delete_button">Delete the structure</button>
+      <button class="button" id ="close_button">Close drawing tool</button>
+    </div>
+    <div id="restricted_div">
+
+    <!-- Modal -->
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
+  </body>
+  <script type="text/javascript">
+
+    //================= Query Selectors========================================
+    var input = document.getElementById('pac-input');
+    let drawing_div = document.querySelector("#drawing_div");
+    let drawing_button = document.querySelector("#drawing_button");
+    let save_button = document.querySelector("#save_button");
+    let delete_button = document.querySelector("#delete_button");
+    let close_button = document.querySelector("#close_button");
+
+
+
+
+    // ================Styling=================================================
+
+    var polygon;
+    var rectangle;
+
+    function initAutocomplete() {
+      var hubbard = {lat: 45.180159, lng: -122.805678}
+      var options = {
+        zoom: 7,
+        minZoom: 7,
+        maxZoom: 20,
+        center: hubbard,
+        mapTypeId: 'satellite',
+        zoomControl: true,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: false,
+      }
+
+      var map = new google.maps.Map(document.getElementById('map'), options)
+
+    // Create the search box and link it to the UI element.
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+     map.addListener('bounds_changed', function() {
+       searchBox.setBounds(map.getBounds());
+     });
+
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+
+      // set the bounds of the map to the address in the search bar
+     var bounds = new google.maps.LatLngBounds();
+     places.forEach(function(place) {
+       if (!place.geometry) {
+         console.log("Returned place contains no geometry");
+         return;
+       }
+      if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+      map.fitBounds(bounds);
+
+      });
+
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+        position: google.maps.ControlPosition.TOP_RIGHT,
+        drawingModes: ['polygon', 'rectangle']
+        }
+      });
+
+      // When user clicks on map, we capture the coordinates.
+      // Should be used to set default center of user map.
+      google.maps.event.addListener(map, 'click', function( event ){
+      alert( "Latitude: "+parseFloat(event.latLng.lat().toFixed(9))+" "+", longitude: "+parseFloat(event.latLng.lng().toFixed(9)) );
+    });
+
+      // Drawing manager disables click control.  Need a button to allow the user to turn on and off drawing maanger
+      drawingManager.setMap(null);
+
+      // Event listener toggles DrawingManager
+      drawing_button.addEventListener('click', function(){
+        drawingManager.setMap(map);
+        // Add a listener for the click event
+      })
+      // Event listener returns DrawingManager to null
+      close_button.addEventListener('click', function(){
+        drawingManager.setMap(null);
+      })
+
+      // Handles click events on a map, and adds a new point to the Polyline.
+      google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
+        var polyBounds = {}
+        var coordStr = "";
+        coordStr=rectangle.getBounds();
+        polyBounds.north = coordStr['na']['l']
+        polyBounds.south = coordStr['na']['j']
+        polyBounds.east = coordStr['ia']['l']
+        polyBounds.west = coordStr['ia']['j']
+        console.log(polyBounds)
+        console.log(polyBounds["north"])
+        rectangle.setMap(map)
+
+        google.maps.event.addListener(rectangle, 'dblclick', function(){
+          console.log(rectangle)
+          rectangle.setMap(null);
+        });
+      });
+
+      // Handles click events on a map, and adds a new point to the Polyline.
+      google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+        var vertices = polygon.getPath();
+        console.log(vertices);
+        console.log(vertices.getLength())
+        for (let i = 0; i < vertices.getLength(); i++){
+          let xy = vertices.getAt(i);
+          console.log(xy.lat())
+          console.log(xy.lng())
+        polygon.setMap(map)
+
+        }
+        google.maps.event.addListener(polygon, 'dblclick', function(){
+          console.log(polygon)
+          polygon.setMap(null);
+        });
+      });
+    }
+
+
+    
+
+
+
+
+
+
+
+
+
+
+    // ---------------Location Data -------------------------------------------
+
+//     let data = {
+//       'polyBounds': JSONdate,
+//       'end': JSONdate_rei,
+//       'pesticide_id': pesticide_id,
+//       'location_id': selected_location_id
+//     }
+//     let config = {
+//       headers: {
+//         'X-CSRFToken': '{{ csrf_token }}'
+//       }
+//     }
+//     axios.post("{% url 'rup:modal' %}", data, config)
+//     .then(function(response) {
+//       console.log(response.data)
+//     })
+//   })
+// }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&libraries=drawing,places&callback=initAutocomplete" async defer></script>
+
+  </html>

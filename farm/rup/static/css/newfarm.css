@@ -1,0 +1,123 @@
+
+ html, body {
+   height: 100%;
+   margin: 0;
+   padding: 0;
+   background-color: #726471;
+ }
+
+#map {
+  height: 60%;
+  width: 86%;
+  margin: 0;
+  position: absolute;
+  top: 10%;
+  left: 7%;
+}
+#applicator_div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#app_name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15%;
+  width: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  color: #E5E5D8;
+}
+
+#infowindow-content .title {
+  font-weight: bold;
+}
+
+#infowindow-content {
+  display: none;
+}
+
+#map #infowindow-content {
+  display: inline;
+}
+
+
+.pac-card {
+   margin: 10px 10px 0 0;
+   border-radius: 2px 0 0 2px;
+   box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   outline: none;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+   background-color: #fff;
+ }
+
+ #pac-container {
+   padding-bottom: 12px;
+   margin-right: 12px;
+ }
+
+ .pac-controls {
+   display: inline-block;
+   padding: 5px 11px;
+ }
+
+ .pac-controls label {
+   font-size: 13px;
+   font-weight: 300;
+ }
+
+ #pac-input {
+   background-color: #fff;
+   font-size: 15px;
+   font-weight: 300;
+   margin-left: 12px;
+   padding: 0 11px 0 13px;
+   text-overflow: ellipsis;
+   width: 400px;
+ }
+
+ #pac-input:focus {
+   border-color: #4d90fe;
+ }
+
+ #title {
+   color: #fff;
+   background-color: #4d90fe;
+   font-size: 25px;
+   font-weight: 500;
+   padding: 6px 12px;
+ }
+ #target {
+   width: 345px;
+ }
+
+
+#drawing_div{
+    width: 86%;
+    height: 30%;
+    position: absolute;
+    bottom: 0px;
+    left: 7%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+  }
+
+
+.button {
+  height: 25%;
+  width: 30%;
+  background-color: white;
+  color: black;
+  border: 2px solid #008CBA;
+  transition-duration: 0.4s;
+}
+
+.button:hover {
+  background-color: #008CBA;
+  color: white;
+}
