@@ -7,10 +7,12 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/newfarm.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <title>Farm Manager</title>
   </head>
-
   <body = id="body">
     <header id = "header">
       <div id="applicator_div">
@@ -20,22 +22,28 @@
     <div id="address_div">
       <input id="pac-input" class="controls" type="text" placeholder="Find your address.">
     </div>
+    <div class="map-wrapper">
+      <div id="map"></div>
+      <div id="drawing_div">
+        <button class="button" id ="drawing_button">Highlight your farm</button>
+        <button class="button" id ="close_button">Close drawing tool</button>
 
-    <div id="map"></div>
-    <div id="drawing_div">
-      <button class="button" id ="drawing_button">Highlight your farm</button>
-      <button class="button" id ="save_button">Save structure</button>
-      <button class="button" id ="delete_button">Delete the structure</button>
-      <button class="button" id ="close_button">Close drawing tool</button>
+        <button class="button" id ="save_button">Save structure</button>
+
+      </div>
     </div>
-    <div id="restricted_div">
-
-    <!-- Modal -->
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
+    <div id="structure_div" class="container">
+    <table id="myTable" class=" table order-list">
+      <thead>
+          <tr>
+              <td>Name</td>
+              <td>Gmail</td>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    </div>
   </body>
   <script type="text/javascript">
 
@@ -46,9 +54,8 @@
     let save_button = document.querySelector("#save_button");
     let delete_button = document.querySelector("#delete_button");
     let close_button = document.querySelector("#close_button");
-
-
-
+    let structure_div = document.querySelector("#structure_div");
+    let tbody = document.getElementsByTagName('tbody')
 
     // ================Styling=================================================
 
@@ -67,6 +74,7 @@
         streetViewControl: false,
         fullscreenControl: false,
         mapTypeControl: false,
+        disableDoubleClickZoom: true,
       }
 
       var map = new google.maps.Map(document.getElementById('map'), options)
@@ -105,23 +113,30 @@
           }
         });
       map.fitBounds(bounds);
-
       });
 
       var drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
         drawingControlOptions: {
-        position: google.maps.ControlPosition.TOP_RIGHT,
+        position: google.maps.ControlPosition.BOTTOM_LEFT,
         drawingModes: ['polygon', 'rectangle']
         }
       });
 
       // When user clicks on map, we capture the coordinates.
       // Should be used to set default center of user map.
-      google.maps.event.addListener(map, 'click', function( event ){
-      alert( "Latitude: "+parseFloat(event.latLng.lat().toFixed(9))+" "+", longitude: "+parseFloat(event.latLng.lng().toFixed(9)) );
-    });
+      function newLocation(newLat,newLng){
+      	map.setCenter({
+      		lat : newLat,
+      		lng : newLng
+      	});
+      }
+      google.maps.event.addListener(map, 'dblclick', function( event ){
+        newLocation(event.latLng.lat(), event.latLng.lng())
+        // var newLat = parseFloat(event.latLng.lat().toFixed(9))
+        // var newLng = parseFloat(event.latLng.lng().toFixed(9))
+      });
 
       // Drawing manager disables click control.  Need a button to allow the user to turn on and off drawing maanger
       drawingManager.setMap(null);
@@ -137,62 +152,123 @@
       })
 
       // Handles click events on a map, and adds a new point to the Polyline.
+      let boundSet = [];
+      let polySet = [];
+      let counters = []
+      let polygons = []
+      let rectangles = []
+      let table = ""
+      let counter = 0
+      let newRow;
+
       google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
-        var polyBounds = {}
-        var coordStr = "";
+        let polyBounds = {}
+        let coordStr = '';
         coordStr=rectangle.getBounds();
         polyBounds.north = coordStr['na']['l']
         polyBounds.south = coordStr['na']['j']
-        polyBounds.east = coordStr['ia']['l']
-        polyBounds.west = coordStr['ia']['j']
-        console.log(polyBounds)
-        console.log(polyBounds["north"])
+        polyBounds.east = coordStr['ga']['l']
+        polyBounds.west = coordStr['ga']['j']
+        // console.log(coordStr)
+        // console.log(polyBounds["north"])
+        boundSet.push(polyBounds)
         rectangle.setMap(map)
+        rectangles.push(rectangle)
 
-        google.maps.event.addListener(rectangle, 'dblclick', function(){
+        newRow = $('<tr id ='+counter+'>');
+        let cell = "";
+        cell += '<td><input type="text" class="form-control" placeholder="greenhouse" /></td>';
+        cell += '<td><input type="text" class="form-control" placeholder="Not sure"/></td>';
+        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
+        newRow.append(cell);
+        $("table.order-list").prepend(newRow);
+        counters.push(counter)
+        counter++;
+
+        $('#deleteRow').click(function(){
+          let polySplice = null
+          polySplice = rectangles.splice(newRow[0].id, 1)
+          console.log(polySplice[0])
           console.log(rectangle)
-          rectangle.setMap(null);
-        });
+          // polySplice[0].setmap(null)
+
+          // if (polygons.length == 0 && boundSet.length == 0){
+          //   counter = 0
+          // }
+          // polySplice.setMap(null)
+          // $(this).closest("tr").remove();
+          // for (let i=0; i<polygons.length; i++){
+          //   let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
+          //   if ( id > newRow[0].id){
+          //     tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+          //   }
+          // }
+        })
+
+        // google.maps.event.addListener(rectangle, 'click', function(){
+        //   for ( let i = boundSet.length-1; i >= 0; i--){
+        //     if ( boundSet[i]['north'] == coordStr['na']['l'] && boundSet[i]['west'] == coordStr['ia']['j']) {
+        //       boundSet.splice(i,1)
+        //       rectangle.setMap(null);
+        //     }
+        //   }
+        // });
       });
 
-      // Handles click events on a map, and adds a new point to the Polyline.
-      google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
-        var vertices = polygon.getPath();
-        console.log(vertices);
-        console.log(vertices.getLength())
-        for (let i = 0; i < vertices.getLength(); i++){
-          let xy = vertices.getAt(i);
-          console.log(xy.lat())
-          console.log(xy.lng())
-        polygon.setMap(map)
+      // Handles click events on a map, and adds a new point to the Polyline. Will need polSet for JSON to backend
 
-        }
-        google.maps.event.addListener(polygon, 'dblclick', function(){
-          console.log(polygon)
-          polygon.setMap(null);
-        });
-      });
+      // google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+    //     let vertices = polygon.getPath();
+    //     var polyList = [];
+    //     for (let i = 0; i < vertices.getLength(); i++){
+    //       var xy = vertices.getAt(i);
+    //       polyList.push(parseFloat(xy.lat()).toFixed(10));
+    //       polyList.push(parseFloat(xy.lng()).toFixed(10));
+    //     }
+    //     polygons.push(polygon)
+    //     polygon.setMap(map);
+    //     polySet.push(polyList);
+    //
+    //     newRow = $('<tr id ='+counter+'>');
+    //     let cell = "";
+    //     cell += '<td><input type="text" class="form-control" placeholder="greenhouse" /></td>';
+    //     cell += '<td><input type="text" class="form-control" placeholder="Not sure"/></td>';
+    //     cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
+    //     newRow.append(cell);
+    //     $("table.order-list").prepend(newRow);
+    //     counters.push(counter)
+    //     counter++;
+    //
+    //     $('#deleteRow').click(function(){
+    //       let polySplice = null
+    //       polySplice = polygons.splice(newRow[0].id, 1)
+    //       console.log(polygons.length)
+    //       if (polygons.length == 0 && boundSet.length == 0){
+    //         counter = 0
+    //       }
+    //       polySplice[0].setMap(null)
+    //       $(this).closest("tr").remove();
+    //       for (let i=0; i<polygons.length; i++){
+    //         let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
+    //         if ( id > newRow[0].id){
+    //           tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+    //         }
+    //       }
+    //     })
+    //     console.log(counter)
+    //   })
     }
-
-
-    
-
-
-
-
-
-
-
-
 
 
     // ---------------Location Data -------------------------------------------
 
 //     let data = {
-//       'polyBounds': JSONdate,
-//       'end': JSONdate_rei,
-//       'pesticide_id': pesticide_id,
-//       'location_id': selected_location_id
+//       'polyBounds': polyBounds,
+//       'polyList': polyList,
+//       'polyname': polyname,
+//       'centerLat': newLat,
+//       'centerLng': newLng,
+//
 //     }
 //     let config = {
 //       headers: {

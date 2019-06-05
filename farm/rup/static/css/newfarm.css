@@ -94,30 +94,47 @@
    width: 345px;
  }
 
-
 #drawing_div{
     width: 86%;
-    height: 30%;
+    height: 65px;
     position: absolute;
-    bottom: 0px;
+    bottom: 10%;
     left: 7%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
   }
 
 
-.button {
-  height: 25%;
+.button{
+  height: 65px;
   width: 30%;
   background-color: white;
   color: black;
   border: 2px solid #008CBA;
   transition-duration: 0.4s;
+  z-index: 10;
+  margin-bottom: 10px;
 }
 
-.button:hover {
+.button:hover{
   background-color: #008CBA;
   color: white;
+}
+
+#table_row {
+  height: 100%;
+  overflow-y:scroll;
+  z-index: -10;
+
+}
+
+#structure_div{
+  margin-top: 10px;
+  position: absolute;
+  bottom: 0;
+  height: 20%;
+  left: 7%;
+  width: 86%;
+
 }
