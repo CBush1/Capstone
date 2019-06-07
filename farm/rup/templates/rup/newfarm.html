@@ -27,18 +27,16 @@
       <div id="drawing_div">
         <button class="button" id ="drawing_button">Highlight your farm</button>
         <button class="button" id ="close_button">Close drawing tool</button>
-
         <button class="button" id ="save_button">Save structure</button>
-
       </div>
     </div>
     <div id="structure_div" class="container">
     <table id="myTable" class=" table order-list">
       <thead>
-          <tr>
-              <td>Name</td>
-              <td>Gmail</td>
-          </tr>
+        <tr>
+          <td>Name</td>
+          <td>Gmail</td>
+        </tr>
       </thead>
       <tbody>
       </tbody>
@@ -114,13 +112,23 @@
         });
       map.fitBounds(bounds);
       });
+      var polyOptions = {
+        strokeWeight: 0,
+        fillOpacity: 0.45,
+    };
+      var rectOptions = {
+        strokeWeight: 0,
+        fillOpacity: 0.45,
+    };
 
       var drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
         drawingControlOptions: {
         position: google.maps.ControlPosition.BOTTOM_LEFT,
-        drawingModes: ['polygon', 'rectangle']
+        drawingModes: ['polygon', 'rectangle'],
+        polygonOptions: polyOptions,
+        rectangleOptions: rectOptions,
         }
       });
 
@@ -154,56 +162,79 @@
       // Handles click events on a map, and adds a new point to the Polyline.
       let boundSet = [];
       let polySet = [];
-      let counters = []
-      let polygons = []
-      let rectangles = []
-      let table = ""
-      let counter = 0
-      let newRow;
+      let polygons = [];
+      let table = "";
+      let counter = 0;
+      let areaRect = 0;
 
       google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
         let polyBounds = {}
         let coordStr = '';
-        coordStr=rectangle.getBounds();
+        coordStr = rectangle.getBounds();
         polyBounds.north = coordStr['na']['l']
         polyBounds.south = coordStr['na']['j']
         polyBounds.east = coordStr['ga']['l']
         polyBounds.west = coordStr['ga']['j']
-        // console.log(coordStr)
-        // console.log(polyBounds["north"])
-        boundSet.push(polyBounds)
-        rectangle.setMap(map)
-        rectangles.push(rectangle)
 
-        newRow = $('<tr id ='+counter+'>');
+        boundSet.push(polyBounds)
+        let corner = {lat: polyBounds.north, lng: polyBounds.east}
+        let topRight = {lat: polyBounds.north, lng: polyBounds.west}
+        let bottomLeft = {lat: polyBounds.south, lng: polyBounds.east}
+        latLngC = new google.maps.LatLng(corner.lat, corner.lng);
+        latLngW = new google.maps.LatLng(topRight.lat, topRight.lng);
+        latLngH = new google.maps.LatLng(bottomLeft.lat, bottomLeft.lng);
+
+        width = new google.maps.Polyline({
+          path: [corner, latLngW],
+          map:map,
+        })
+
+        height = new google.maps.Polyline({
+          path: [corner, latLngH],
+          map:map,
+        })
+
+        calculateAreaRect(latLngC, latLngH, latLngC, latLngW)
+
+
+
+        rectangle.setOptions({fillColor: 'green'})
+        rectangle.setMap(map)
+        let area = parseFloat(google.maps.geometry.spherical.computeArea(coordStr)/10000*2.47105).toFixed(2)
+
+        polygons.push(rectangle)
+
+        let newRow = $('<tr id ='+counter+'>');
         let cell = "";
-        cell += '<td><input type="text" class="form-control" placeholder="greenhouse" /></td>';
-        cell += '<td><input type="text" class="form-control" placeholder="Not sure"/></td>';
+        cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
+        cell += '<td id="area"><div>'+areaRect+' acre\'s</div></td>';
         cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
         newRow.append(cell);
         $("table.order-list").prepend(newRow);
-        counters.push(counter)
         counter++;
+        if (polygons[newRow[0].id]['fillColor']=='green'){
+          $('#deleteRow').click(function(){
 
-        $('#deleteRow').click(function(){
-          let polySplice = null
-          polySplice = rectangles.splice(newRow[0].id, 1)
-          console.log(polySplice[0])
-          console.log(rectangle)
-          // polySplice[0].setmap(null)
+            let rectSplice = polygons.splice(newRow[0].id, 1)
+            counter--
+            if (polygons.length == 0 && polygons.length == 0){
+              counter = 0;
+            }
 
-          // if (polygons.length == 0 && boundSet.length == 0){
-          //   counter = 0
-          // }
-          // polySplice.setMap(null)
-          // $(this).closest("tr").remove();
-          // for (let i=0; i<polygons.length; i++){
-          //   let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
-          //   if ( id > newRow[0].id){
-          //     tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
-          //   }
-          // }
+            rectSplice[0].setMap(null)
+            $(this).closest("tr").remove();
+            for (let i=0; i<polygons.length; i++){
+              let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
+              if ( id > newRow[0].id){
+                tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+              }
+          }
         })
+
+
+
+
+
 
         // google.maps.event.addListener(rectangle, 'click', function(){
         //   for ( let i = boundSet.length-1; i >= 0; i--){
@@ -213,51 +244,66 @@
         //     }
         //   }
         // });
-      });
-
+      };
+    })
       // Handles click events on a map, and adds a new point to the Polyline. Will need polSet for JSON to backend
 
-      // google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
-    //     let vertices = polygon.getPath();
-    //     var polyList = [];
-    //     for (let i = 0; i < vertices.getLength(); i++){
-    //       var xy = vertices.getAt(i);
-    //       polyList.push(parseFloat(xy.lat()).toFixed(10));
-    //       polyList.push(parseFloat(xy.lng()).toFixed(10));
-    //     }
-    //     polygons.push(polygon)
-    //     polygon.setMap(map);
-    //     polySet.push(polyList);
-    //
-    //     newRow = $('<tr id ='+counter+'>');
-    //     let cell = "";
-    //     cell += '<td><input type="text" class="form-control" placeholder="greenhouse" /></td>';
-    //     cell += '<td><input type="text" class="form-control" placeholder="Not sure"/></td>';
-    //     cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
-    //     newRow.append(cell);
-    //     $("table.order-list").prepend(newRow);
-    //     counters.push(counter)
-    //     counter++;
-    //
-    //     $('#deleteRow').click(function(){
-    //       let polySplice = null
-    //       polySplice = polygons.splice(newRow[0].id, 1)
-    //       console.log(polygons.length)
-    //       if (polygons.length == 0 && boundSet.length == 0){
-    //         counter = 0
-    //       }
-    //       polySplice[0].setMap(null)
-    //       $(this).closest("tr").remove();
-    //       for (let i=0; i<polygons.length; i++){
-    //         let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
-    //         if ( id > newRow[0].id){
-    //           tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
-    //         }
-    //       }
-    //     })
-    //     console.log(counter)
-    //   })
+      google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+
+        let vertices = polygon.getPath();
+        var polyList = [];
+        for (let i = 0; i < vertices.getLength(); i++){
+          var xy = vertices.getAt(i);
+          polyList.push(parseFloat(xy.lat()).toFixed(10));
+          polyList.push(parseFloat(xy.lng()).toFixed(10));
+        }
+        polygons.push(polygon)
+        polygon.setOptions({fillColor: 'black'})
+        polygon.setMap(map);
+        polySet.push(polyList);
+        console.log(polygon.getPath())
+        let area =  parseFloat(google.maps.geometry.spherical.computeArea(polygon.getPath())/10000*2.47105).toFixed(2)
+
+        let polyRow = $('<tr id ='+counter+'>');
+        let cell = "";
+        cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
+        cell += '<td id="area"><div>'+area+' acre\'s</div></td>';
+        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
+        polyRow.append(cell);
+        $("table.order-list").prepend(polyRow);
+        counter++;
+
+
+
+        if (polygons[polyRow[0].id]['fillColor']=='black'){
+
+        $('#deleteRow').click(function(){
+
+          counter--
+          polySplice = polygons.splice(polyRow[0].id, 1)
+          if (polygons.length == 0 && polygons.length == 0){
+            counter = 0
+          }
+          polySplice[0].setMap(null)
+          $(this).closest("tr").remove();
+          for (let i=0; i<polygons.length; i++){
+            id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
+            if ( id > polyRow[0].id){
+              tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+            }
+          }
+        })
+      }
+    })
+    function calculateAreaRect(start,end,start2,end2) {
+      let length = google.maps.geometry.spherical.computeDistanceBetween(start, end)
+      let width = google.maps.geometry.spherical.computeDistanceBetween(start2, end2)
+      areaRect = length * width
+      areaRect = parseFloat((areaRect)/10000*2.47105).toFixed(2)
+      console.log(areaRect)
+      return areaRect;
     }
+  }
 
 
     // ---------------Location Data -------------------------------------------
@@ -283,6 +329,6 @@
 // }
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&libraries=drawing,places&callback=initAutocomplete" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&libraries=drawing,places,geometry&callback=initAutocomplete" async defer></script>
 
   </html>
