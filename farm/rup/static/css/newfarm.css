@@ -7,12 +7,13 @@
  }
 
 #map {
-  height: 60%;
-  width: 86%;
+  height: 72%;
+  width: 75%;
   margin: 0;
   position: absolute;
-  top: 10%;
+  top: 8%;
   left: 7%;
+  margin-bottom: 5px;
 }
 #applicator_div {
   display: flex;
@@ -69,6 +70,10 @@
    font-weight: 300;
  }
 
+ /* .gmnoprint {
+   height: 20px;
+ } */
+
  #pac-input {
    background-color: #fff;
    font-size: 15px;
@@ -95,26 +100,24 @@
  }
 
 #drawing_div{
-    width: 86%;
-    height: 65px;
+    height: 80%;
+    width: 15%;
     position: absolute;
-    bottom: 10%;
-    left: 7%;
+    right: 3%;
+    top: 11%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-
 .button{
-  height: 65px;
-  width: 30%;
+  height: 60px;
+  width: 60%;
   background-color: white;
   color: black;
   border: 2px solid #008CBA;
   transition-duration: 0.4s;
   z-index: 10;
-  margin-bottom: 10px;
 }
 
 .button:hover{
@@ -122,19 +125,151 @@
   color: white;
 }
 
-#table_row {
-  height: 100%;
-  overflow-y:scroll;
-  z-index: -10;
-
-}
-
-#structure_div{
+#table_div{
+  background-color: white;
+  border-color: #E5E5D8;
   margin-top: 10px;
   position: absolute;
   bottom: 0;
   height: 20%;
   left: 7%;
-  width: 86%;
+  width: 75%;
+  overflow-y: scroll;
+}
 
+.map-wrapper{
+  height:80%;
+  background-color: white;
+}
+
+.block{
+  display: inline-block;
+}
+
+@media (min-width: 576px) {
+  .block{
+    display: inline-block;
+  }
+  #table_div{
+    background-color: white;
+    border-color: #E5E5D8;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 0;
+    height: 20%;
+    left: 7%;
+    width: 75%;
+    overflow-y: scroll;
+  }
+
+  .map-wrapper{
+    height:80%;
+    background-color: white;
+  }
+  #drawing_div{
+    height: 80%;
+    width: 15%;
+    position: absolute;
+    right: 3%;
+    top: 11%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #map {
+    height: 72%;
+    width: 75%;
+    margin: 0;
+    position: absolute;
+    top: 8%;
+    left: 7%;
+    margin-bottom: 5px;
+  }
+}
+
+
+@media only screen and (min-width: 700px) {
+  .block{
+    display: inline-block;
+  }
+  #table_div{
+    background-color: white;
+    border-color: #E5E5D8;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 0;
+    height: 80%;
+    left: 0%;
+    width: 350px;
+  }
+
+  .map-wrapper{
+    height:80%;
+    background-color: white;
+  }
+  #drawing_div{
+    height: 12%;
+    width: 350px;
+    position: absolute;
+    left: 0%;
+    top: 10%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  #map {
+    height: 90%;
+    width: 100%;
+    position: absolute;
+    bottom: 0%;
+    left: 20%;
+  }
+  #mobile_drawing_div{
+      height: 80%;
+      width: 15%;
+      position: absolute;
+      right: 3%;
+      top: 10%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+  .button{
+    height: 60px;
+    width: 77px;
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
+    transition-duration: 0.4s;
+    z-index: 10;
+  }
+
+  .button:hover{
+    background-color: #008CBA;
+    color: white;
+  }
+
+}
+
+.button_center {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.save{background-color: #4CAF50;}
+.cancel {background-color: #f44336;}
+
+.modal-content {
+   position: absolute;
+   top: : 75vh;
+   z-index: 10040;
+   overflow: auto;
+   overflow-y: auto;
 }

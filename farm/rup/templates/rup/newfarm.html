@@ -12,53 +12,76 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <title>Farm Manager</title>
+
   </head>
+
   <body = id="body">
-    <header id = "header">
-      <div id="applicator_div">
-        <div id="app_name">Welcome to Pest'r!</div>
+    <div class="container-fluid">
+
+      <header id = "header">
+        <div id="applicator_div">
+          <div id="app_name">Welcome to Pest'r!</div>
+        </div>
+      </header>
+      <div id="address_div">
+        <input id="pac-input" class="controls" type="text" placeholder="Find your address.">
       </div>
-    </header>
-    <div id="address_div">
-      <input id="pac-input" class="controls" type="text" placeholder="Find your address.">
-    </div>
-    <div class="map-wrapper">
-      <div id="map"></div>
-      <div id="drawing_div">
-        <button class="button" id ="drawing_button">Highlight your farm</button>
-        <button class="button" id ="close_button">Close drawing tool</button>
+      <div class="block">
+        <div id="map"></div>
+
+      </div>
+      <!-- Large modal -->
+      <div id="myModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <p>Do you want this to be the center of your map?</p>
+            <button id="center_save" class="button_center save">save</button>
+            <button id="center_cancel"class="button_center cancel">cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="block" id="drawing_div">
+        <button class="button" id ="drawing_button">Highlight farm</button>
+        <button class="button" id ="close_button">Close tool</button>
         <button class="button" id ="save_button">Save structure</button>
       </div>
+      <div class="block" id="table_div">
+        <table id="myTable" class="table table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Greenhouse/Parcel</th>
+              <th scope="col">Area</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-    <div id="structure_div" class="container">
-    <table id="myTable" class=" table order-list">
-      <thead>
-        <tr>
-          <td>Name</td>
-          <td>Gmail</td>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    </div>
+
+
   </body>
+
   <script type="text/javascript">
+
+
 
     //================= Query Selectors========================================
     var input = document.getElementById('pac-input');
-    let drawing_div = document.querySelector("#drawing_div");
     let drawing_button = document.querySelector("#drawing_button");
     let save_button = document.querySelector("#save_button");
     let delete_button = document.querySelector("#delete_button");
     let close_button = document.querySelector("#close_button");
-    let structure_div = document.querySelector("#structure_div");
-    let tbody = document.getElementsByTagName('tbody')
+    let tbody = document.getElementsByTagName('tbody');
+    let center_save = document.querySelector("#center_save");
+    let center_cancel = document.querySelector("#center_cancel");
 
     // ================Styling=================================================
-
-    var polygon;
-    var rectangle;
+    $('#myModal').modal('hide')
+    var popup, Popup, rectangle, polygon;
 
     function initAutocomplete() {
       var hubbard = {lat: 45.180159, lng: -122.805678}
@@ -125,7 +148,7 @@
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
         drawingControlOptions: {
-        position: google.maps.ControlPosition.BOTTOM_LEFT,
+        position: google.maps.ControlPosition.TOP_RIGHT,
         drawingModes: ['polygon', 'rectangle'],
         polygonOptions: polyOptions,
         rectangleOptions: rectOptions,
@@ -134,17 +157,35 @@
 
       // When user clicks on map, we capture the coordinates.
       // Should be used to set default center of user map.
+
       function newLocation(newLat,newLng){
+        center_save.classList.add('.center_button');
+        center_cancel.classList.add('.center_button');
+        center_cancel.onclick = function() {
+          $('#myModal').modal('hide')
+          newinfowindow.close(map);
+    }
+
+        let newCenter = {lat: newLat, lng: newLng}
+        let newinfowindow = new google.maps.InfoWindow({
+          position: newCenter,
+          content: '<p>Latitude: '+newCenter['lat']+'</p><p>Longitude:'+ newCenter['lng']+'</p>'
+        })
+        // cancel_center.addEventListener('click', function(){
+        //   newinfowindow.setmap(null)
+        // })
       	map.setCenter({
       		lat : newLat,
       		lng : newLng
       	});
+        newinfowindow.open(map);
+
       }
       google.maps.event.addListener(map, 'dblclick', function( event ){
         newLocation(event.latLng.lat(), event.latLng.lng())
-        // var newLat = parseFloat(event.latLng.lat().toFixed(9))
-        // var newLng = parseFloat(event.latLng.lng().toFixed(9))
+        $('#myModal').modal('toggle')
       });
+
 
       // Drawing manager disables click control.  Need a button to allow the user to turn on and off drawing maanger
       drawingManager.setMap(null);
@@ -186,12 +227,10 @@
 
         width = new google.maps.Polyline({
           path: [corner, latLngW],
-          map:map,
         })
 
         height = new google.maps.Polyline({
           path: [corner, latLngH],
-          map:map,
         })
 
         calculateAreaRect(latLngC, latLngH, latLngC, latLngW)
@@ -207,10 +246,14 @@
         let newRow = $('<tr id ='+counter+'>');
         let cell = "";
         cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
+        if (areaRect < 2.471){
         cell += '<td id="area"><div>'+areaRect+' acre\'s</div></td>';
+      } else if (areaRect > 2.471){
+        cell += '<td id="area"><div>'+(areaRect/2.471).toFixed(2)+' ha\'s</div></td>';
+        }
         cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
         newRow.append(cell);
-        $("table.order-list").prepend(newRow);
+        $("table.table-sm").prepend(newRow);
         counter++;
         if (polygons[newRow[0].id]['fillColor']=='green'){
           $('#deleteRow').click(function(){
@@ -266,11 +309,12 @@
 
         let polyRow = $('<tr id ='+counter+'>');
         let cell = "";
+
         cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
         cell += '<td id="area"><div>'+area+' acre\'s</div></td>';
         cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
         polyRow.append(cell);
-        $("table.order-list").prepend(polyRow);
+        $("table.table-sm").prepend(polyRow);
         counter++;
 
 
@@ -304,6 +348,10 @@
       return areaRect;
     }
   }
+
+
+
+
 
 
     // ---------------Location Data -------------------------------------------
