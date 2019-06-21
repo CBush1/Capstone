@@ -53,13 +53,38 @@
             <div class="submit_style">
               <h5>Product</h5>
               <select id="product_selection"></select>
+              <p id=epa_number></p>
               <button id="submit_product" type="submit" value = "submit_product" name="pesticide">Select</button>
             </div>
             <hr>
             <div>
-              <h5>EPA registration number:</h5>
-              <p id=epa_number></p>
+              <h5>Details</h5>
+              <input id="application_rate2" type="text" placeholder="quantity (oz)">
+              <input id="application_target" type="text" placeholder="Target crop">
+              <input id="application_target" type="text" placeholder="Applicator name">
             </div>
+            <div id="addSpray">
+              <div class='submit_style'>
+                <h5>Purpose</h5>
+                <select id="selection2"></select>
+                <!-- <button id='submit_use' type='button' onclick='useChoice()' value = 'submit_use' name='use' >Apply</button> -->
+              </div>
+              <div class="submit_style">
+                <h5>Product</h5>
+                <select id="product_selection2"></select>
+                <input id="application_rate2" type="text" placeholder="quantity(oz)">
+                <button id="submit_product2" type="submit" value = "submit_product" name="pesticide">Select</button>
+              </div>
+              <hr>
+              <div>
+                <h5>EPA registration number:</h5>
+                <p id=epa_number2></p>
+              </div>
+            </div>
+            <div>
+              <button id="add_pesticide">+</button>
+            </div>
+
             <hr>
             <div class="rei">
               <div id="rei_duration">
@@ -100,15 +125,21 @@
     let product_selection = document.querySelector("#product_selection")
     let submit_product = document.querySelector("#submit_product")
     let selection = document.querySelector("#selection")
+    let product_selection2 = document.querySelector("#product_selection2")
+    let submit_product2 = document.querySelector("#submit_product2")
+    let selection2 = document.querySelector("#selection2")
     let rei = document.getElementById("rei")
     let rei_para = document.getElementById("rei_para")
     let number = document.getElementById("epa_number")
+    let number2 = document.getElementById("epa_number2")
     let btn_save = document.querySelector('#btn_save')
     let cancel = document.querySelector('#cancel')
     let user = document.querySelector('.user')
     let body = document.querySelector('#body')
     let restricted_div = document.querySelector('#restricted_div')
     let location_name = document.querySelector('#location_name')
+    let add_pesticide = document.querySelector('#add_pesticide')
+    let addSpray = document.querySelector('#addSpray')
 
 
     // ================Styling=================================================
@@ -177,8 +208,6 @@
         //   }
         // });
 
-
-
         set_restriction(greenhousePolygon, location);
         cancel_modal(greenhousePolygon, location)
       }
@@ -193,6 +222,7 @@
           $('#exampleModalCenter').modal('toggle');
           $("#SiteName").text(location.name)
           selected_location_id = location.id
+          addSpray.style.display = "none"
         })
       }
 
@@ -204,12 +234,11 @@
         })
       }
 
-
-
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
       //---------------------- Modal Purpose selection ------------------------
-      let option = null
+      let option;
+      let option2;
       {% for use in uses %}
         option = document.createElement("option")
         option.text = "{{use.use}}"
@@ -217,22 +246,46 @@
         selection.appendChild(option)
       {%endfor%}
 
-
       //---------------------- Modal Pesticide selection ------------------------
       // ----------------------Takes user input from use selection to filter full pesticide list
       selection.addEventListener("change", function(){
         let use_choice = $('#selection option:selected').text();
         product_selection.innerHTML = '';
         {% for pesticide in datas %};
-          if ("{{pesticide.use}}" == use_choice){
+          if (use_choice == "{{pesticide.use}}"){
             let option = document.createElement("option")
             option.text = "{{pesticide.product_name}}"
             option.value = {{pesticide.id}}
             product_selection.appendChild(option)
-          };
+          }
         {% endfor %};
       });
 
+      // ------------------Add pesticide spray---------------------------------
+      add_pesticide.addEventListener("click", function(){
+        addSpray.style.display = "block"
+        {% for use in uses %}
+          option2 = document.createElement("option")
+          option2.text = "{{use.use}}"
+          option2.value = {{use.id}}
+          selection2.appendChild(option2)
+        {%endfor%}
+      })
+
+      //---------------------- Modal Pesticide selection ------------------------
+      // ----------------------Takes user input from use selection to filter full pesticide list
+      selection2.addEventListener("change", function(){
+        let use_choice2 = $('#selection2 option:selected').text();
+        product_selection2.innerHTML = '';
+        {% for pesticide in datas %};
+          if (use_choice2 == "{{pesticide.use}}"){
+            let option2 = document.createElement("option")
+            option2.text = "{{pesticide.product_name}}"
+            option2.value = {{pesticide.id}}
+            product_selection2.appendChild(option2)
+          }
+        {% endfor %};
+      });
 
       //------------Modal Pesticide initiator ------------------------
 
@@ -249,9 +302,27 @@
         .then(function(response) {
           let data = response.data;
           let product_choice = $('#product_selection option:selected').text()
+
           for (let i=0; i < data.products.length; i++) {
             if (product_choice == data.products[i].product_name){
               number.innerText = data.products[i].epa_number
+            }
+          }
+        })
+      })
+      submit_product2.addEventListener("click", function(){
+        let config = {
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          }
+        }
+      axios.get('{% url 'rup:get_product' %}', config)
+      .then(function(response) {
+        let data = response.data;
+        let product_choice2 = $('#product_selection2 option:selected').text()
+        for (let i=0; i < data.products.length; i++) {
+          if (product_choice2 == data.products[i].product_name){
+            number2.innerText = data.products[i].epa_number
             }
           }
         })
@@ -322,6 +393,7 @@
         if (hh_rei < 10){hh_rei = "0" + hh_rei}
 
         JSONdate_rei = `${yyyy}`+'-'+`${mm}`+'-'+`${dd_rei}`+' '+`${hh_rei}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`
+        console.log(JSONdate_rei)
       }
 
       // -------------------Save Data----------------------------------
@@ -346,25 +418,6 @@
       })
     }
 
-    // ---------------Location Data -------------------------------------------
-
-//     let data = {
-//       'polyBounds': JSONdate,
-//       'end': JSONdate_rei,
-//       'pesticide_id': pesticide_id,
-//       'location_id': selected_location_id
-//     }
-//     let config = {
-//       headers: {
-//         'X-CSRFToken': '{{ csrf_token }}'
-//       }
-//     }
-//     axios.post("{% url 'rup:modal' %}", data, config)
-//     .then(function(response) {
-//       console.log(response.data)
-//     })
-//   })
-// }
 
 
 

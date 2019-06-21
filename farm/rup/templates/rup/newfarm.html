@@ -50,7 +50,7 @@
         <table id="myTable" class="table table-sm">
           <thead>
             <tr>
-              <th scope="col">Greenhouse/Parcel</th>
+              <th scope="col"><input id="poly_name" type="text" value="name">Greenhouse/Parcel</input></th>
               <th scope="col">Area</th>
               <th scope="col">Delete</th>
             </tr>
@@ -61,7 +61,6 @@
       </div>
 
     </div>
-
 
   </body>
 
@@ -78,6 +77,7 @@
     let tbody = document.getElementsByTagName('tbody');
     let center_save = document.querySelector("#center_save");
     let center_cancel = document.querySelector("#center_cancel");
+    let polyname = document.querySelector("#poly_name");
 
     // ================Styling=================================================
     $('#myModal').modal('hide')
@@ -100,49 +100,49 @@
 
       var map = new google.maps.Map(document.getElementById('map'), options)
 
-    // Create the search box and link it to the UI element.
+      // Create the search box and link it to the UI element.
       var searchBox = new google.maps.places.SearchBox(input);
       map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
       // Bias the SearchBox results towards current map's viewport.
-     map.addListener('bounds_changed', function() {
-       searchBox.setBounds(map.getBounds());
-     });
+      map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+      });
 
-    // Listen for the event fired when the user selects a prediction and retrieve
-    // more details for that place.
-    searchBox.addListener('places_changed', function() {
-      var places = searchBox.getPlaces();
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
 
-      if (places.length == 0) {
-        return;
-      }
+        if (places.length == 0) {
+          return;
+        }
 
 
       // set the bounds of the map to the address in the search bar
-     var bounds = new google.maps.LatLngBounds();
-     places.forEach(function(place) {
-       if (!place.geometry) {
-         console.log("Returned place contains no geometry");
-         return;
-       }
-      if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+         if (!place.geometry) {
+           console.log("Returned place contains no geometry");
+           return;
+         }
+        if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+        map.fitBounds(bounds);
         });
-      map.fitBounds(bounds);
-      });
-      var polyOptions = {
-        strokeWeight: 0,
-        fillOpacity: 0.45,
-    };
-      var rectOptions = {
-        strokeWeight: 0,
-        fillOpacity: 0.45,
-    };
+        var polyOptions = {
+          strokeWeight: 0,
+          fillOpacity: 0.45,
+      };
+        var rectOptions = {
+          strokeWeight: 0,
+          fillOpacity: 0.45,
+        };
 
       var drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -164,28 +164,24 @@
         center_cancel.onclick = function() {
           $('#myModal').modal('hide')
           newinfowindow.close(map);
-    }
+        }
 
         let newCenter = {lat: newLat, lng: newLng}
         let newinfowindow = new google.maps.InfoWindow({
           position: newCenter,
           content: '<p>Latitude: '+newCenter['lat']+'</p><p>Longitude:'+ newCenter['lng']+'</p>'
         })
-        // cancel_center.addEventListener('click', function(){
-        //   newinfowindow.setmap(null)
-        // })
       	map.setCenter({
       		lat : newLat,
       		lng : newLng
       	});
         newinfowindow.open(map);
-
       }
+
       google.maps.event.addListener(map, 'dblclick', function( event ){
         newLocation(event.latLng.lat(), event.latLng.lng())
         $('#myModal').modal('toggle')
       });
-
 
       // Drawing manager disables click control.  Need a button to allow the user to turn on and off drawing maanger
       drawingManager.setMap(null);
@@ -193,7 +189,6 @@
       // Event listener toggles DrawingManager
       drawing_button.addEventListener('click', function(){
         drawingManager.setMap(map);
-        // Add a listener for the click event
       })
       // Event listener returns DrawingManager to null
       close_button.addEventListener('click', function(){
@@ -204,42 +199,38 @@
       let boundSet = [];
       let polySet = [];
       let polygons = [];
-      let table = "";
       let counter = 0;
       let areaRect = 0;
-
+      //This massive chunk of code creates a rectangle, calculates the area, adds it to the Polygons list, adds it to the table
       google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
-        let polyBounds = {}
+        let rectBounds = {}
         let coordStr = '';
         coordStr = rectangle.getBounds();
-        polyBounds.north = coordStr['na']['l']
-        polyBounds.south = coordStr['na']['j']
-        polyBounds.east = coordStr['ga']['l']
-        polyBounds.west = coordStr['ga']['j']
+        rectBounds.north = coordStr['na']['l']
+        rectBounds.south = coordStr['na']['j']
+        rectBounds.east = coordStr['ga']['l']
+        rectBounds.west = coordStr['ga']['j']
 
-        boundSet.push(polyBounds)
-        let corner = {lat: polyBounds.north, lng: polyBounds.east}
-        let topRight = {lat: polyBounds.north, lng: polyBounds.west}
-        let bottomLeft = {lat: polyBounds.south, lng: polyBounds.east}
+        boundSet.push(rectBounds)
+        let corner = {lat: rectBounds.north, lng: rectBounds.east}
+        let topRight = {lat: rectBounds.north, lng: rectBounds.west}
+        let bottomLeft = {lat: rectBounds.south, lng: rectBounds.east}
         latLngC = new google.maps.LatLng(corner.lat, corner.lng);
         latLngW = new google.maps.LatLng(topRight.lat, topRight.lng);
         latLngH = new google.maps.LatLng(bottomLeft.lat, bottomLeft.lng);
 
-        width = new google.maps.Polyline({
+        let width = new google.maps.Polyline({
           path: [corner, latLngW],
         })
 
-        height = new google.maps.Polyline({
+        let height = new google.maps.Polyline({
           path: [corner, latLngH],
         })
 
         calculateAreaRect(latLngC, latLngH, latLngC, latLngW)
 
-
-
         rectangle.setOptions({fillColor: 'green'})
         rectangle.setMap(map)
-        let area = parseFloat(google.maps.geometry.spherical.computeArea(coordStr)/10000*2.47105).toFixed(2)
 
         polygons.push(rectangle)
 
@@ -247,14 +238,15 @@
         let cell = "";
         cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
         if (areaRect < 2.471){
-        cell += '<td id="area"><div>'+areaRect+' acre\'s</div></td>';
-      } else if (areaRect > 2.471){
-        cell += '<td id="area"><div>'+(areaRect/2.471).toFixed(2)+' ha\'s</div></td>';
+          cell += '<td id="area"><div>'+areaRect+' acre\'s</div></td>';
+        } else if (areaRect > 2.471){
+          cell += '<td id="area"><div>'+(areaRect/2.471).toFixed(2)+' ha\'s</div></td>';
         }
-        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
+        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="+"></td><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
         newRow.append(cell);
         $("table.table-sm").prepend(newRow);
         counter++;
+
         if (polygons[newRow[0].id]['fillColor']=='green'){
           $('#deleteRow').click(function(){
 
@@ -263,36 +255,20 @@
             if (polygons.length == 0 && polygons.length == 0){
               counter = 0;
             }
-
             rectSplice[0].setMap(null)
             $(this).closest("tr").remove();
             for (let i=0; i<polygons.length; i++){
               let id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
               if ( id > newRow[0].id){
                 tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
-              }
-          }
-        })
+              };
+            };
+          });
+        };
+      });
 
-
-
-
-
-
-        // google.maps.event.addListener(rectangle, 'click', function(){
-        //   for ( let i = boundSet.length-1; i >= 0; i--){
-        //     if ( boundSet[i]['north'] == coordStr['na']['l'] && boundSet[i]['west'] == coordStr['ia']['j']) {
-        //       boundSet.splice(i,1)
-        //       rectangle.setMap(null);
-        //     }
-        //   }
-        // });
-      };
-    })
       // Handles click events on a map, and adds a new point to the Polyline. Will need polSet for JSON to backend
-
       google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
-
         let vertices = polygon.getPath();
         var polyList = [];
         for (let i = 0; i < vertices.getLength(); i++){
@@ -305,76 +281,69 @@
         polygon.setMap(map);
         polySet.push(polyList);
         console.log(polygon.getPath())
-        let area =  parseFloat(google.maps.geometry.spherical.computeArea(polygon.getPath())/10000*2.47105).toFixed(2)
-
+        let areaPoly =  parseFloat(google.maps.geometry.spherical.computeArea(polygon.getPath())/10000*2.47105).toFixed(2)
         let polyRow = $('<tr id ='+counter+'>');
         let cell = "";
-
         cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
-        cell += '<td id="area"><div>'+area+' acre\'s</div></td>';
-        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="Delete"></td>';
+        cell += '<td id="area"><div>'+areaPoly+' acre\'s</div></td>';
+        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="+"></td><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
         polyRow.append(cell);
         $("table.table-sm").prepend(polyRow);
         counter++;
 
-
-
         if (polygons[polyRow[0].id]['fillColor']=='black'){
-
-        $('#deleteRow').click(function(){
-
-          counter--
-          polySplice = polygons.splice(polyRow[0].id, 1)
-          if (polygons.length == 0 && polygons.length == 0){
-            counter = 0
-          }
-          polySplice[0].setMap(null)
-          $(this).closest("tr").remove();
-          for (let i=0; i<polygons.length; i++){
-            id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
-            if ( id > polyRow[0].id){
-              tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+          $('#deleteRow').click(function(){
+            counter--
+            polySplice = polygons.splice(polyRow[0].id, 1)
+            if (polygons.length == 0 && polygons.length == 0){
+              counter = 0
             }
-          }
-        })
+            polySplice[0].setMap(null)
+            $(this).closest("tr").remove();
+            for (let i=0; i<polygons.length; i++){
+              id = parseInt(tbody[0]['children'][i]['attributes']['id']['nodeValue'])
+              if ( id > polyRow[0].id){
+                tbody[0]['children'][i]['attributes']['id']['nodeValue'] = id - 1
+              };
+            };
+          });
+        };
+      });
+      // This function is used to calculate the area of the rectangle by defineing two lines and then multiplying them LxW.
+      function calculateAreaRect(start,end,start2,end2) {
+        let length = google.maps.geometry.spherical.computeDistanceBetween(start, end)
+        let width = google.maps.geometry.spherical.computeDistanceBetween(start2, end2)
+        areaRect = parseFloat((length * width)/10000*2.47105).toFixed(2)
+        return areaRect;
       }
-    })
-    function calculateAreaRect(start,end,start2,end2) {
-      let length = google.maps.geometry.spherical.computeDistanceBetween(start, end)
-      let width = google.maps.geometry.spherical.computeDistanceBetween(start2, end2)
-      areaRect = length * width
-      areaRect = parseFloat((areaRect)/10000*2.47105).toFixed(2)
-      console.log(areaRect)
-      return areaRect;
     }
-  }
 
 
+    // ---------------User_location Data -------------------------------------------
+    btn_save.addEventListener("click", function(){
+      polyname = polyname.text
 
+      let user_location_data = {
+        'polyname': polyname,
+        'rectBounds': rectBounds,
+        'polyList': polyList,
+        'centerLat': newLat,
+        'centerLng': newLng,
+        'areaRect' : areaRect,
+        'areaPoly' : areaPoly,
+      }
 
+      let config = {
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      }
+      axios.post("{% url 'rup:modal' %}", user_location_data, config)
+      .then(function(response) {
+        console.log(response.user_location_data)
+      })
+    })
 
-
-    // ---------------Location Data -------------------------------------------
-
-//     let data = {
-//       'polyBounds': polyBounds,
-//       'polyList': polyList,
-//       'polyname': polyname,
-//       'centerLat': newLat,
-//       'centerLng': newLng,
-//
-//     }
-//     let config = {
-//       headers: {
-//         'X-CSRFToken': '{{ csrf_token }}'
-//       }
-//     }
-//     axios.post("{% url 'rup:modal' %}", data, config)
-//     .then(function(response) {
-//       console.log(response.data)
-//     })
-//   })
-// }
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{SECRET_KEY_GOOGLE}}&libraries=drawing,places,geometry&callback=initAutocomplete" async defer></script>
