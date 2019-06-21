@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import Pesticide, Location, LocationPesticide
+from .models import Pesticide, Location, LocationPesticide, UserLocation
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -77,6 +77,21 @@ def modal(request):
     end = data['end']
     modal_data = LocationPesticide(location_id=location_id, pesticide_id=pesticide_id, start=start, end=end, user=user)
     modal_data.save()
+
+    return HttpResponse('ok')
+
+def create_location(request):
+    data = json.loads(request.body)
+    polyname = data['polyname']
+    rectBounds = data['rectBounds']
+    polyList = data['polyList']
+    newLat = data['centerLat']
+    newLng = data['centerLng']
+    areaRect = data['areaRect']
+    areaPoly = data['areaPoly']
+
+    location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
+    location_data.save()
 
     return HttpResponse('ok')
 

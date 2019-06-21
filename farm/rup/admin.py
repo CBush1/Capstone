@@ -2,12 +2,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Pesticide, Name, Location, LocationPesticide
+from .models import Pesticide, Name, Location, LocationPesticide, UserLocation
 
 
 admin.site.register(Pesticide)
 admin.site.register(Name)
 admin.site.register(Location)
+admin.site.register(UserLocation)
 admin.site.register(LocationPesticide)
 # admin.site.register(LocationManager)
 

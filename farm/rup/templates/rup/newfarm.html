@@ -323,7 +323,7 @@
     btn_save.addEventListener("click", function(){
       polyname = polyname.text
 
-      let user_location_data = {
+      let data = {
         'polyname': polyname,
         'rectBounds': rectBounds,
         'polyList': polyList,
@@ -338,9 +338,9 @@
           'X-CSRFToken': '{{ csrf_token }}'
         }
       }
-      axios.post("{% url 'rup:modal' %}", user_location_data, config)
+      axios.post("{% url 'rup:create_location' %}", data, config)
       .then(function(response) {
-        console.log(response.user_location_data)
+        console.log(response.data)
       })
     })
 

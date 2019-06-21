@@ -13,5 +13,7 @@ urlpatterns = [
     path('mylogin/', views.mylogin, name='mylogin'),
     path('modal/', views.modal, name='modal'),
     path('user_view/', views.user_view, name='user_view'),
+    path('create_location/', views.create_location, name='create_location'),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

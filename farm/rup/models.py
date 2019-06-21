@@ -17,7 +17,7 @@ class Name(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    license_no = models.IntegerField(blank=0)
+    license_no = models.IntegerField(null=True)
 
     def __str__(self):
         return self.first_name
@@ -34,6 +34,20 @@ class Location(models.Model):
         if self.locationpesticide_set.filter(start__lte=now, end__gte=now).exists():
             return True
         return False
+
+class UserLocation(models.Model):
+    polyname = models.CharField(max_length=200)
+    rectBounds = models.TextField()
+    polyList = models.TextField()
+    rectBounds = models.TextField()
+    newLat = models.CharField(max_length=50)
+    newLng = models.CharField(max_length=50)
+    areaRect = models.CharField(max_length=50)
+    areaPoly = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 
 class LocationPesticide(models.Model):
     """Many locations or pesticides, one LocationPesticide event"""
