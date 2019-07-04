@@ -59,9 +59,9 @@
             <hr>
             <div>
               <h5>Details</h5>
-              <input id="application_rate2" type="text" placeholder="quantity (oz)">
+              <input id="application_rate" type="text" placeholder="quantity (oz)">
               <input id="application_target" type="text" placeholder="Target crop">
-              <input id="application_target" type="text" placeholder="Applicator name">
+              <input id="applicator" type="text" placeholder="Applicator name">
             </div>
             <div id="addSpray">
               <div class='submit_style'>
@@ -140,6 +140,10 @@
     let location_name = document.querySelector('#location_name')
     let add_pesticide = document.querySelector('#add_pesticide')
     let addSpray = document.querySelector('#addSpray')
+    let application_rate = document.querySelector('#application_rate')
+    let application_target = document.querySelector('#application_target')
+    let applicator = document.querySelector('#applicator')
+
 
 
     // ================Styling=================================================
@@ -161,6 +165,7 @@
         },
       {% endfor %}
       ]
+
 
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 18,
@@ -330,27 +335,18 @@
 
       // ---------------------- Modal REI set time ------------------------
 
-      let JSONdate = null
-      let JSONdate_input = null
+      let JSONdate = "";
+      let JSONdate_rei = "";
+
       rei.addEventListener("click", function() {
          rei_click()
       })
 
       function rei_click(){
-
-        let rei_input = document.getElementById("rei_input").value
         let date_time = new Date()
-
-
         let date = date_time.toLocaleDateString();
-        let rei_input_int = parseInt(rei_input)
-
-        if (rei_input_int >= 24){
-          let day = (date_time.getDate() + rei_input_int/24)
-          date_time.setDate(day)
-        }
-        let rei_date = date_time.toLocaleDateString()
         let ampm = ""
+
         if (date_time.getHours() < 12){ampm = 'AM'} else {ampm = 'PM'}
         let h = date_time.getHours() % 12;
         if (h == 0){h += 12}
@@ -363,8 +359,6 @@
         if (mm < 12){mm = "0" + mm;}
         let dd = date_time.getDate()
         if (dd < 10){dd = "0" + dd;}
-        let dd_rei = date_time.getDate()
-        if (dd_rei < 10){dd_rei = "0" + dd_rei;}
         let hh = date_time.getHours()
         if (hh < 10){hh = "0" + hh;}
         let min = date_time.getMinutes()
@@ -372,39 +366,52 @@
         let ss = date_time.getSeconds()
         if (ss < 10){ss = "0" + ss;}
         let uuu = date_time.getMilliseconds()
-        let tz = '0'+ date_time.getTimezoneOffset()/60 + ':00'
+        let tz = '0'+ Math.floor(date_time.getTimezoneOffset()/60) + ':00'
 
         JSONdate = `${yyyy}`+'-'+`${mm}`+'-'+`${dd}`+' '+`${hh}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`
 
-        let h_rei_int = date_time.setHours(date_time.getHours() + rei_input_int);
+        let rei_input = document.getElementById("rei_input").value
+        let rei_input_int = parseInt(rei_input)
+        let date_time_rei = date_time
+        let h_rei_int = date_time_rei.setHours(date_time_rei.getHours() + rei_input_int);
         let h_rei = new Date(h_rei_int)
-        if (h_rei.getHours() < 12){ampm = 'AM'} else {ampm = 'PM'}
-        h_rei = h_rei.getHours() % 12;
-        if (h_rei == 0){h_rei+= 12}
+        let day_rei = (date_time_rei.getDate() + Math.floor(rei_input_int/48))
+        date_time_rei.setDate(day_rei)
+
+        if (h_rei.getHours() < 12){ampm = 'AM'} else {ampm = 'PM'};
+        let hh_rei = h_rei.getHours()
+        h_rei = h_rei.getHours() % 12
+        if (h_rei == 0){h_rei += 12};
+
+        // if (h_rei < 10){h_rei = "0" + h_rei};
+        let dd_rei = date_time_rei.getDate()
+        if (dd_rei < 10){dd_rei = "0" + dd_rei};
+
         let rei_time = `${h_rei} : ${m} ${ampm}`
+        let rei_date = date_time_rei.toLocaleDateString();
+        rei_para.innerText = "Applied on "+date+ " at "+time + '\n' + "Stay out until "+rei_date+ " at "+rei_time;
 
-        rei_para.innerText = "Applied on "+date+ " at "+time + '\n' + "Stay out until "+rei_date+ " at "+rei_time
-
-        if (rei_input_int >= 24){
-          dd_rei = (date_time.getDate() + rei_input_int/24)
-          date_time.setDate(dd_rei)
-        }
-        let hh_rei = h_rei + 12
-        if (hh_rei < 10){hh_rei = "0" + hh_rei}
-
-        JSONdate_rei = `${yyyy}`+'-'+`${mm}`+'-'+`${dd_rei}`+' '+`${hh_rei}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`
-        console.log(JSONdate_rei)
+        JSONdate_rei = `${yyyy}`+'-'+`${mm}`+'-'+`${dd_rei}`+' '+`${hh_rei}`+':'+`${min}`+':'+`${ss}`+'.'+`${uuu}`+'000'+'-'+`${tz}`;
+        return JSONdate_rei;
       }
+
 
       // -------------------Save Data----------------------------------
 
       btn_save.addEventListener("click", function(){
+        application_rate = application_rate.value
+        application_target = application_target.value
+        applicator = applicator.value
         pesticide_id = product_selection.options[product_selection.selectedIndex].value
         let data = {
           'start': JSONdate,
           'end': JSONdate_rei,
           'pesticide_id': pesticide_id,
-          'location_id': selected_location_id
+          'location_id': selected_location_id,
+          'rate' : application_rate,
+          'target' : application_target,
+          'applicator' : applicator,
+
         }
         let config = {
           headers: {
@@ -417,15 +424,6 @@
         })
       })
     }
-
-
-
-
-
-
-
-
-
 
 
     </script>

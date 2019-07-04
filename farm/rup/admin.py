@@ -10,7 +10,6 @@ admin.site.register(Name)
 admin.site.register(Location)
 admin.site.register(UserLocation)
 admin.site.register(LocationPesticide)
-# admin.site.register(LocationManager)
 
 
 # Define an inline admin descriptor for Employee model

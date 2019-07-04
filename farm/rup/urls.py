@@ -7,13 +7,14 @@ from . import views
 
 app_name ='rup'
 urlpatterns = [
-    path('newfarm/', views.newfarm, name='newfarm'),
+    # path('newfarm/', views.newfarm, name='newfarm'),
     path('polygon/', views.polygon, name='polygon'),
     path('get_product/', views.get_product, name='get_product'),
     path('mylogin/', views.mylogin, name='mylogin'),
     path('modal/', views.modal, name='modal'),
     path('user_view/', views.user_view, name='user_view'),
-    path('create_location/', views.create_location, name='create_location'),
+
+    # path('create_location/', views.create_location, name='create_location'),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
 from .models import Pesticide, Location, LocationPesticide, UserLocation
 from .config import config
@@ -7,8 +7,11 @@ from django.contrib.auth import authenticate, login
 from django.utils import timezone
 
 
+
 import json
 import datetime
+import pytz
+
 
 def mylogin(request):
     username = request.POST['username']
@@ -26,6 +29,13 @@ def mylogin(request):
     # else:
     #     # Return an 'invalid login' error message.
 
+def set_timezone(request):
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
+    else:
+        return render(request, 'user_view.html', {'timezones': pytz.common_timezones})
+
 def newfarm(request):
     context = {
         'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE']
@@ -38,16 +48,16 @@ def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
     uses = []
-    for i in range(1, (len(datas))):
+    for i in range(1,(len(datas))):
         if datas[i].use != None:
             if datas[i].use != datas[i-1].use:
                 uses.append(datas[i])
 
     context = {
-        'uses': uses,
-        'datas' : datas,
+        'uses':uses,
+        'datas':datas,
         'locations':locations,
-        'SECRET_KEY_GOOGLE': config['SECRET_KEY_GOOGLE'],
+        'SECRET_KEY_GOOGLE':config['SECRET_KEY_GOOGLE'],
     }
     return render(request, 'rup/polygon.html', context)
 
@@ -75,30 +85,35 @@ def modal(request):
     user = request.user
     start = data['start']
     end = data['end']
-    modal_data = LocationPesticide(location_id=location_id, pesticide_id=pesticide_id, start=start, end=end, user=user)
+    rate = data['rate']
+    target = data['target']
+    applicator = data['applicator']
+    modal_data = LocationPesticide(location_id=location_id, pesticide_id=pesticide_id, start=start, end=end, user=user, rate=rate, target=target, applicator=applicator)
     modal_data.save()
 
     return HttpResponse('ok')
 
-def create_location(request):
-    data = json.loads(request.body)
-    polyname = data['polyname']
-    rectBounds = data['rectBounds']
-    polyList = data['polyList']
-    newLat = data['centerLat']
-    newLng = data['centerLng']
-    areaRect = data['areaRect']
-    areaPoly = data['areaPoly']
-
-    location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
-    location_data.save()
-
-    return HttpResponse('ok')
+# def create_location(request):
+#     data = json.loads(request.body)
+#     polyname = data['polyname']
+#     rectBounds = data['rectBounds']
+#     polyList = data['polyList']
+#     newLat = data['centerLat']
+#     newLng = data['centerLng']
+#     areaRect = data['areaRect']
+#     areaPoly = data['areaPoly']
+#
+#     location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
+#     location_data.save()
+#     print(location_data)
+#
+#     return HttpResponse('ok')
 
 @login_required
 def user_view(request):
     # events = LocationPesticide.objects.prefetch_related('pesticide', 'user', 'location')
     now = timezone.now()
+    # print(now)
     events = LocationPesticide.objects.filter(start__lte=now, end__gte=now)
     locations = Location.objects.all()
 

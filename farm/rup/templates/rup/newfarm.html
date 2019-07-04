@@ -17,7 +17,6 @@
 
   <body = id="body">
     <div class="container-fluid">
-
       <header id = "header">
         <div id="applicator_div">
           <div id="app_name">Welcome to Pest'r!</div>
@@ -28,7 +27,6 @@
       </div>
       <div class="block">
         <div id="map"></div>
-
       </div>
       <!-- Large modal -->
       <div id="myModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -40,7 +38,6 @@
           </div>
         </div>
       </div>
-
       <div class="block" id="drawing_div">
         <button class="button" id ="drawing_button">Highlight farm</button>
         <button class="button" id ="close_button">Close tool</button>
@@ -59,9 +56,7 @@
           </tbody>
         </table>
       </div>
-
     </div>
-
   </body>
 
   <script type="text/javascript">
@@ -165,7 +160,11 @@
           $('#myModal').modal('hide')
           newinfowindow.close(map);
         }
-
+        center_save.onclick = function() {
+          newCenter = {lat: newLat, lng: newLng}
+          $('#myModal').modal('hide')
+          newinfowindow.close(map);
+        }
         let newCenter = {lat: newLat, lng: newLng}
         let newinfowindow = new google.maps.InfoWindow({
           position: newCenter,
@@ -320,10 +319,11 @@
 
 
     // ---------------User_location Data -------------------------------------------
-    btn_save.addEventListener("click", function(){
+    save_button.addEventListener("click", function(){
       polyname = polyname.text
 
-      let data = {
+      let user_data = {
+        'newCenter': newCenter,
         'polyname': polyname,
         'rectBounds': rectBounds,
         'polyList': polyList,
@@ -338,9 +338,9 @@
           'X-CSRFToken': '{{ csrf_token }}'
         }
       }
-      axios.post("{% url 'rup:create_location' %}", data, config)
+      axios.post("{% url 'rup:create_location' %}", user_data, config)
       .then(function(response) {
-        console.log(response.data)
+        console.log(response.user_data)
       })
     })
 

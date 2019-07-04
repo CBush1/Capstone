@@ -17,7 +17,7 @@
       <div id="applicator_div">
         <div id="app_name">Pest'r
         </div>
-        <ul class="sidebar-nav"  id="user_interface">
+        <ul class="sidebar-nav" id="user_interface">
           {% if user.is_authenticated %}
          <li>User: {{ user.get_username }}</li>
          <div id="login">
@@ -94,6 +94,7 @@
   </body>
 
   <script type="text/javascript">
+  console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
 
     //================= Query Selectors========================================
     let product_selection = document.querySelector("#product_selection")
@@ -137,6 +138,7 @@
         },
       {% endfor %}
       ]
+      console.log(locations)
 
       var siteColors = ['000000', '#FF0000', '#7CFC00']
 
@@ -182,7 +184,7 @@
         Unrestricted_polygon(greenhousePolygon, location)
         }
       }
-    }
+
 
     let events = [
       {% for item in events %}
@@ -197,56 +199,56 @@
           end: '{{item.end}}',
           applicator: '{{item.user.name.license_no}}'
         },
-
       {% endfor %}
     ]
 
       //---------------------- changes colors of polygons ----------------------
       //------if color changes red, the modal becomes available by dblclick-----
 
-      function Restricted_polygon(greenhousePolygon, location) {
-        let listener = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
-          $('#exampleModalCenter').modal('toggle');
-          $("#SiteName").text(location.name)
-          let greenhouseChoice = location.id;
-          for (let i =0; i<events.length; i++){
-             if (events[i]['location_id'] == greenhouseChoice){
-               // console.log('found event for location!')
-               console.log(events[i]['location_id'])
-               product_selection.innerText = events[i]['pesticide']
-               selection.innerText = events[i]['use']
-               text1.innerText = "Applied on: "+ events[i]['start']
-               text2.innerText = "Off limits until: "+ events[i]['end']
-               epa_number.innerText =  events[i]['number']
-               rui.innerText = events[i]['rui']
-               modal_header[0].innerText = 'Restricted entry interval:'
-               modal_header[1].innerText = 'Purpose:'
-               modal_header[2].innerText = 'Product:'
-               modal_header[3].innerText = 'EPA registration number:'
-               modal_header[4].innerText = 'Restricted use:'
-               unrestricted.style.display = "none"
-               for (let i = 0; i < info_style.length; i++){
-                 info_style[i].style.display = "block";
-               }
-               modal_background.style.backgroundColor = '#FF5E5E'
-                }
-              }
-            })
-          }
-        function Unrestricted_polygon(greenhousePolygon, location) {
-          let listener2 = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
-            $('#exampleModalCenter').modal('toggle');
-            $("#SiteName").text(location.name);
-            for (let i = 0; i < info_style.length; i++){
-              info_style[i].style.display = "none";
+    function Restricted_polygon(greenhousePolygon, location) {
+      let listener = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
+        $('#exampleModalCenter').modal('toggle');
+        $("#SiteName").text(location.name)
+        let greenhouseChoice = location.id;
+        for (let i =0; i<events.length; i++){
+           if (events[i]['location_id'] == greenhouseChoice){
+             // console.log('found event for location!')
+             console.log(events[i]['location_id'])
+             product_selection.innerText = events[i]['pesticide']
+             selection.innerText = events[i]['use']
+             text1.innerText = "Applied on: "+ events[i]['start']
+             text2.innerText = "Off limits until: "+ events[i]['end']
+             epa_number.innerText =  events[i]['number']
+             rui.innerText = events[i]['rui']
+             modal_header[0].innerText = 'Restricted entry interval:'
+             modal_header[1].innerText = 'Purpose:'
+             modal_header[2].innerText = 'Product:'
+             modal_header[3].innerText = 'EPA registration number:'
+             modal_header[4].innerText = 'Restricted use:'
+             unrestricted.style.display = "none"
+             for (let i = 0; i < info_style.length; i++){
+               info_style[i].style.display = "block";
+             }
+             modal_background.style.backgroundColor = '#FF5E5E'
             }
-            unrestricted.style.display = "block";
-            modal_background.style.backgroundColor = '#B1C9CC';
-          })
-        }
+          }
+        })
+      }
+      function Unrestricted_polygon(greenhousePolygon, location) {
+        let listener2 = google.maps.event.addListener(greenhousePolygon, 'dblclick', function(){
+          $('#exampleModalCenter').modal('toggle');
+          $("#SiteName").text(location.name);
+          for (let i = 0; i < info_style.length; i++){
+            info_style[i].style.display = "none";
+          }
+          unrestricted.style.display = "block";
+          modal_background.style.backgroundColor = '#B1C9CC';
+        })
+      }
 
       //---------------------- Hides modal button --------------------------
       $(".btn-primary").hide();
+    }
 
       //---------------------- Modal Pesticide RUI  ------------------------
     </script>

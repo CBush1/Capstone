@@ -46,7 +46,7 @@ class UserLocation(models.Model):
     areaPoly = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name
+        return self.polyname
 
 
 class LocationPesticide(models.Model):
@@ -56,6 +56,10 @@ class LocationPesticide(models.Model):
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rate = models.CharField(null=True, max_length=50)
+    target = models.CharField(null=True, max_length=50)
+    applicator = models.CharField(null=True, max_length=50)
+
 
     def __str__(self):
         return self.location.name + ' ' + self.pesticide.product_name

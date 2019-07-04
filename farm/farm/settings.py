@@ -2,6 +2,15 @@
 
 import os
 from django.utils.translation import gettext_lazy as _
+from django.utils.deprecation import MiddlewareMixin
+
+class TimezoneMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        tzname = request.session.get('django_timezone')
+        if tzname:
+            timezone.activate(pytz.timezone(tzname))
+        else:
+            timezone.deactivate()
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -42,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'farm.urls'
