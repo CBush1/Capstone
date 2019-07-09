@@ -48,6 +48,14 @@ class UserLocation(models.Model):
     def __str__(self):
         return self.polyname
 
+class Center(models.Model):
+    timestamp = models.DateTimeField(null=True, blank=True)
+    lat = models.TextField(null=True)
+    lng = models.TextField(null=True)
+
+    def __str__(self):
+        return self.timestamp
+
 
 class LocationPesticide(models.Model):
     """Many locations or pesticides, one LocationPesticide event"""

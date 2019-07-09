@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import Pesticide, Location, LocationPesticide, UserLocation
+from .models import Pesticide, Location, LocationPesticide, UserLocation, Center
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -47,6 +47,10 @@ def newfarm(request):
 def polygon(request):
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
+    centers = Center.objects.all()
+    center = centers[0:1]
+    print(center)
+
     uses = []
     for i in range(1,(len(datas))):
         if datas[i].use != None:
@@ -56,6 +60,7 @@ def polygon(request):
     context = {
         'uses':uses,
         'datas':datas,
+        'center':center,
         'locations':locations,
         'SECRET_KEY_GOOGLE':config['SECRET_KEY_GOOGLE'],
     }
@@ -93,21 +98,34 @@ def modal(request):
 
     return HttpResponse('ok')
 
-# def create_location(request):
-#     data = json.loads(request.body)
-#     polyname = data['polyname']
-#     rectBounds = data['rectBounds']
-#     polyList = data['polyList']
-#     newLat = data['centerLat']
-#     newLng = data['centerLng']
-#     areaRect = data['areaRect']
-#     areaPoly = data['areaPoly']
-#
-#     location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
-#     location_data.save()
-#     print(location_data)
-#
-#     return HttpResponse('ok')
+def create_location(request):
+    data = json.loads(request.body)
+    polyname = data['polyname']
+    rectBounds = data['rectBounds']
+    polyList = data['polyList']
+    newLat = data['centerLat']
+    newLng = data['centerLng']
+    areaRect = data['areaRect']
+    areaPoly = data['areaPoly']
+
+    location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
+    location_data.save()
+    print(location_data)
+
+    return HttpResponse('ok')
+
+def pick_center(request):
+    data = json.loads(request.body)
+    lat = data['lat']
+    lng = data['lng']
+    timestamp = timezone.now()
+    user_center = Center(lat=lat, lng=lng, timestamp=timestamp)
+    print(user_center)
+    # user_center.save()
+    # print(user_center)
+
+    return HttpResponse('ok')
+
 
 @login_required
 def user_view(request):

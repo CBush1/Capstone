@@ -47,7 +47,7 @@
         <table id="myTable" class="table table-sm">
           <thead>
             <tr>
-              <th scope="col"><input id="poly_name" type="text" value="name">Greenhouse/Parcel</input></th>
+              <th id = "poly_name" scope="col">Greenhouse/Parcel</th>
               <th scope="col">Area</th>
               <th scope="col">Delete</th>
             </tr>
@@ -159,13 +159,16 @@
         center_cancel.onclick = function() {
           $('#myModal').modal('hide')
           newinfowindow.close(map);
+
         }
         center_save.onclick = function() {
           newCenter = {lat: newLat, lng: newLng}
           $('#myModal').modal('hide')
           newinfowindow.close(map);
+          console.log(newCenter)
+          return newCenter
         }
-        let newCenter = {lat: newLat, lng: newLng}
+        newCenter = {lat: newLat, lng: newLng}
         let newinfowindow = new google.maps.InfoWindow({
           position: newCenter,
           content: '<p>Latitude: '+newCenter['lat']+'</p><p>Longitude:'+ newCenter['lng']+'</p>'
@@ -315,34 +318,57 @@
         areaRect = parseFloat((length * width)/10000*2.47105).toFixed(2)
         return areaRect;
       }
-    }
 
 
-    // ---------------User_location Data -------------------------------------------
+
     save_button.addEventListener("click", function(){
-      polyname = polyname.text
-
-      let user_data = {
-        'newCenter': newCenter,
-        'polyname': polyname,
-        'rectBounds': rectBounds,
-        'polyList': polyList,
-        'centerLat': newLat,
-        'centerLng': newLng,
-        'areaRect' : areaRect,
-        'areaPoly' : areaPoly,
+      console.log(newCenter['lat'])
+      let center_data = {
+        'lat': newCenter['lat'],
+        'lng': newCenter['lng'],
       }
-
       let config = {
         headers: {
           'X-CSRFToken': '{{ csrf_token }}'
         }
       }
-      axios.post("{% url 'rup:create_location' %}", user_data, config)
+      axios.post("{% url 'rup:pick_center' %}", center_data, config)
       .then(function(response) {
-        console.log(response.user_data)
+        console.log(response.center_data)
       })
     })
+  }
+
+
+    // // ---------------User_location Data -------------------------------------------
+    // save_button.addEventListener("click", function(){
+    //   polyname = polyname.text
+    //   console.log(polyname)
+    //
+    //   let user_data = {
+    //     'newCenter': newCenter,
+    //     // 'polyname': polyname,
+    //     // 'rectBounds': rectBounds,
+    //     // 'polyList': polyList,
+    //     // 'centerLat': newLat,
+    //     // 'centerLng': newLng,
+    //     // 'areaRect' : areaRect,
+    //     // 'areaPoly' : areaPoly,
+    //   }
+    //
+    //   let config = {
+    //     headers: {
+    //       'X-CSRFToken': '{{ csrf_token }}'
+    //     }
+    //   }
+    //   axios.post("{% url 'rup:create_location' %}", user_data, config)
+    //   .then(function(response) {
+    //     console.log(response.user_data)
+    //   })
+    // })
+    // ---------------Center Data -------------------------------------------
+
+
 
 
     </script>

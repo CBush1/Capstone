@@ -30,6 +30,14 @@
     </header>
 
     <div id="map"></div>
+    <div id="dashboard">
+      <h3>dashboard</h3>
+      <div id="dashboard_div">
+        <h5>Site Selection</h5>
+        <select id="location_selector"></select>
+
+      </div>
+    </div>
 
     <div id="restricted_div">
     <!-- Modal -->
@@ -122,6 +130,10 @@
   <script type="text/javascript">
 
     //================= Query Selectors========================================
+    let location_selector = document.querySelector("#location_selector")
+    let dashboard = document.querySelector("#dashboard")
+    let dashboard_div = document.querySelector("#dashboard_div")
+
     let product_selection = document.querySelector("#product_selection")
     let submit_product = document.querySelector("#submit_product")
     let selection = document.querySelector("#selection")
@@ -165,19 +177,25 @@
         },
       {% endfor %}
       ]
-
-
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 18,
         minZoom: 18,
         maxZoom: 20,
-        center: {lat: 45.147124, lng: -122.760927},
+        center: {lat: 45.147213, lng:  -122.761094},
         mapTypeId: 'satellite',
         zoomControl: false,
         streetViewControl: false,
         fullscreenControl: false,
         mapTypeControl: false,
       })
+      let centers = [
+        {% for center in centers %}
+          {
+          lat: {{center.lat}},
+          lng:  {{center.lng}},
+          }
+        {% endfor %}
+      ]
 
       for (let i=0; i<locations.length; i++) {
         let location = locations[i];
@@ -204,22 +222,34 @@
           map:map
         });
 
-        // var drawingManager = new google.maps.drawing.DrawingManager({
-        //   drawingMode: google.maps.drawing.OverlayType.MARKER,
-        //   drawingControl: true,
-        //   drawingControlOptions: {
-        //     position: google.maps.ControlPosition.TOP_CENTER,
-        //     drawingModes: [ 'polygon', 'rectangle']
-        //   }
-        // });
-
         set_restriction(greenhousePolygon, location);
         cancel_modal(greenhousePolygon, location)
       }
 
+      let location_selection = null;
+      {% for location in locations %}
+        location_selection = document.createElement("option")
+        location_selection.text = "{{location.name}}"
+        location_selection.value = {{location.id}}
+        location_selector.appendChild(location_selection)
+      {%endfor%}
       // drawingManager.setMap(map);
       //---------------------- changes colors of polygons ----------------------
       //------if color changes red, the modal becomes available by dblclick-----
+      // function dashboard_restriction(location, greenhousePolygons){
+      //   let spray_locations = []
+      //   location_selector.addEventListener("change", function(){
+      //     let spray_location_id = $('#location_selector option:selected').val();
+      //     console.log(spray_location_id)
+      //     spray_locations.push(spray_location_id)
+      //
+      //
+      //     let index = greenhousePolygons[spray_location_id]
+      //     console.log(index)
+      //     index.setOptions({fillColor:'#FF0000'});
+      //
+      //   })
+      // }
 
       function set_restriction(greenhousePolygon, location) {
         var listener = google.maps.event.addListener(greenhousePolygon, 'click', function(){
@@ -228,6 +258,7 @@
           $("#SiteName").text(location.name)
           selected_location_id = location.id
           addSpray.style.display = "none"
+          console.log("click")
         })
       }
 
@@ -255,6 +286,7 @@
       // ----------------------Takes user input from use selection to filter full pesticide list
       selection.addEventListener("change", function(){
         let use_choice = $('#selection option:selected').text();
+        console.log(use_choice)
         product_selection.innerHTML = '';
         {% for pesticide in datas %};
           if (use_choice == "{{pesticide.use}}"){
