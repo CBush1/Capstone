@@ -19,6 +19,16 @@
     <div class="container-fluid">
       <header id = "header">
         <div id="applicator_div">
+          <ul class="sidebar-nav"  id="user_interface">
+            {% if user.is_authenticated %}
+           <li>User: {{ user.get_username }}</li>
+           <div id="login">
+             <li><a href="{% url 'login'%}?next={{request.path}}">Logout</a></li>
+             {% else %}
+             <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+          </div>
+           {% endif %}
+          </ul>
           <div id="app_name">Welcome to Pest'r!</div>
         </div>
       </header>
@@ -41,7 +51,7 @@
       <div class="block" id="drawing_div">
         <button class="button" id ="drawing_button">Highlight farm</button>
         <button class="button" id ="close_button">Close tool</button>
-        <button class="button" id ="save_button">Save structure</button>
+        <!-- <button class="button" id ="save_button">Save structure</button> -->
       </div>
       <div class="block" id="table_div">
         <table id="myTable" class="table table-sm">
@@ -49,6 +59,7 @@
             <tr>
               <th id = "poly_name" scope="col">Greenhouse/Parcel</th>
               <th scope="col">Area</th>
+              <th scope="col">Keep</th>
               <th scope="col">Delete</th>
             </tr>
           </thead>
@@ -66,13 +77,12 @@
     //================= Query Selectors========================================
     var input = document.getElementById('pac-input');
     let drawing_button = document.querySelector("#drawing_button");
-    let save_button = document.querySelector("#save_button");
+    // let save_button = document.querySelector("#save_button");
     let delete_button = document.querySelector("#delete_button");
     let close_button = document.querySelector("#close_button");
     let tbody = document.getElementsByTagName('tbody');
     let center_save = document.querySelector("#center_save");
     let center_cancel = document.querySelector("#center_cancel");
-    let polyname = document.querySelector("#poly_name");
 
     // ================Styling=================================================
     $('#myModal').modal('hide')
@@ -162,7 +172,7 @@
 
         }
         center_save.onclick = function() {
-          newCenter = {lat: newLat, lng: newLng}
+          newCenter = {lat: newLat, lng: newLng }
           $('#myModal').modal('hide')
           newinfowindow.close(map);
           console.log(newCenter)
@@ -203,6 +213,10 @@
       let polygons = [];
       let counter = 0;
       let areaRect = 0;
+      var polyList;
+      var rectBounds;
+      // var areaRect;
+      var areaPoly;
       //This massive chunk of code creates a rectangle, calculates the area, adds it to the Polygons list, adds it to the table
       google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
         let rectBounds = {}
@@ -233,18 +247,17 @@
 
         rectangle.setOptions({fillColor: 'green'})
         rectangle.setMap(map)
-
         polygons.push(rectangle)
 
         let newRow = $('<tr id ='+counter+'>');
         let cell = "";
-        cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
+        cell += '<td ><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
         if (areaRect < 2.471){
           cell += '<td id="area"><div>'+areaRect+' acre\'s</div></td>';
         } else if (areaRect > 2.471){
           cell += '<td id="area"><div>'+(areaRect/2.471).toFixed(2)+' ha\'s</div></td>';
         }
-        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="+"></td><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
+        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
         newRow.append(cell);
         $("table.table-sm").prepend(newRow);
         counter++;
@@ -270,9 +283,10 @@
       });
 
       // Handles click events on a map, and adds a new point to the Polyline. Will need polSet for JSON to backend
+
       google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
         let vertices = polygon.getPath();
-        var polyList = [];
+        polyList = [];
         for (let i = 0; i < vertices.getLength(); i++){
           var xy = vertices.getAt(i);
           polyList.push(parseFloat(xy.lat()).toFixed(10));
@@ -282,13 +296,14 @@
         polygon.setOptions({fillColor: 'black'})
         polygon.setMap(map);
         polySet.push(polyList);
-        console.log(polygon.getPath())
+        console.log(polyList)
         let areaPoly =  parseFloat(google.maps.geometry.spherical.computeArea(polygon.getPath())/10000*2.47105).toFixed(2)
         let polyRow = $('<tr id ='+counter+'>');
         let cell = "";
-        cell += '<td><input type="text" class="form-control" placeholder="greenhouse'+counter+'" /></td>';
-        cell += '<td id="area"><div>'+areaPoly+' acre\'s</div></td>';
-        cell += '<td id="deleteRow"><input type="button" class="ibtnDel btn btn-md btn-danger" value="+"></td><input type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
+        cell += '<td><input id="polyname" type="text" class="form-control" placeholder="greenhouse'+counter+'" value="" /></td>';
+        cell += '<td><div id="area">'+areaPoly+' acre\'s</div></td>';
+        cell += '<td><input id="save_button" type="button" class="ibtnDel btn btn-md btn-danger" value="+"></td>';
+        cell += '<td><input id="deleteRow" type="button" class="ibtnDel btn btn-md btn-danger" value="-"></td>';
         polyRow.append(cell);
         $("table.table-sm").prepend(polyRow);
         counter++;
@@ -310,6 +325,7 @@
             };
           });
         };
+        return polyList
       });
       // This function is used to calculate the area of the rectangle by defineing two lines and then multiplying them LxW.
       function calculateAreaRect(start,end,start2,end2) {
@@ -321,8 +337,7 @@
 
 
 
-    save_button.addEventListener("click", function(){
-      console.log(newCenter['lat'])
+    center_save.addEventListener("click", function(){
       let center_data = {
         'lat': newCenter['lat'],
         'lng': newCenter['lng'],
@@ -337,35 +352,33 @@
         console.log(response.center_data)
       })
     })
-  }
+
 
 
     // // ---------------User_location Data -------------------------------------------
-    // save_button.addEventListener("click", function(){
-    //   polyname = polyname.text
-    //   console.log(polyname)
-    //
-    //   let user_data = {
-    //     'newCenter': newCenter,
-    //     // 'polyname': polyname,
-    //     // 'rectBounds': rectBounds,
-    //     // 'polyList': polyList,
-    //     // 'centerLat': newLat,
-    //     // 'centerLng': newLng,
-    //     // 'areaRect' : areaRect,
-    //     // 'areaPoly' : areaPoly,
-    //   }
-    //
-    //   let config = {
-    //     headers: {
-    //       'X-CSRFToken': '{{ csrf_token }}'
-    //     }
-    //   }
-    //   axios.post("{% url 'rup:create_location' %}", user_data, config)
-    //   .then(function(response) {
-    //     console.log(response.user_data)
-    //   })
-    // })
+      $('document').on('click', '#save_button', function(){
+        polyname =  $("#polyname").val()
+        console.log(polyname)
+
+        let user_data = {
+          'polyname': polyname,
+          'rectBounds': rectBounds,
+          'polyList': polyList,
+          'areaRect' : areaRect,
+          'areaPoly' : areaPoly,
+        }
+
+        let config = {
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          }
+        }
+        axios.post("{% url 'rup:create_location' %}", user_data, config)
+        .then(function(response) {
+          console.log(response.user_data)
+        })
+      })
+    }
     // ---------------Center Data -------------------------------------------
 
 

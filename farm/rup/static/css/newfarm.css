@@ -31,6 +31,26 @@
   font-weight: bold;
   color: #E5E5D8;
 }
+#user_interface {
+  width: 80%;
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  color: #E5E5D8;
+}
+
+#user_interface li {
+  margin-left: 20px;
+  margin-top: 10px;
+  color: #E5E5D8;
+  list-style: None;
+}
+#user_interface:last-child {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
 
 #infowindow-content .title {
   font-weight: bold;

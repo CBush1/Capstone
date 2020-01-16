@@ -44,17 +44,10 @@
       display: flex;
       justify-content: center;
     }
-    #lost_pass{
-      display: flex;
-      justify-content: center;
 
-
-
-    }
     p {
       font-family: 'Fira Sans', sans-serif;
     }
-
 
     input{
       width: 80px;
@@ -67,9 +60,14 @@
       font-family: 'Fira Sans', sans-serif;
       font-size: 15px;
     }
-    a {
+    a{
       text-decoration: none;
       color: black;
+    }
+    #lost_pass{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
     }
 
     </style>
@@ -114,6 +112,8 @@
         <div id="lost_pass">
           {# Assumes you setup the password_reset view in your URLconf #}
           <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+          <p><a href="{% url 'users:register' %}">Want to join Pest'r?</a></p>
+
         </div>
         <!-- {% endblock %} -->
       </div>

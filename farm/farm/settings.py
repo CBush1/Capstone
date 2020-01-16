@@ -1,3 +1,6 @@
+"""As i Add things here, write a comment explaining
+ what it does so i don't comment out imporant things
+ that break the code."""
 
 
 import os
@@ -29,16 +32,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rup',
 ]
 
@@ -51,8 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-
 ]
 
 ROOT_URLCONF = 'farm.urls'
@@ -60,7 +62,7 @@ ROOT_URLCONF = 'farm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,18 +107,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
-
 TIME_ZONE = 'US/Pacific'
 
-USE_I18N = True
+USE_I18N = False
+"""Internationalization"""
 
 USE_L10N = True
+"""Local Date"""
 
 USE_TZ = True
-
-USE_I18N = True
+"""Timezone aware"""
 
 LANGUAGE_CODE = 'en-us'
 
@@ -124,7 +124,6 @@ LANGUAGES = (
     ('en-us', _('English')),
     ('es', _('Spanish')),
 )
-
 
 STATIC_URL = '/static/'
 
@@ -134,4 +133,4 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SITE_ID = 1

@@ -1,16 +1,19 @@
 from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponse,HttpResponseRedirect, JsonResponse
-from .models import Pesticide, Location, LocationPesticide, UserLocation, Center
+from .models import Pesticide, Location, LocationPesticide, UserProfile
+from django.contrib.auth.models import User
+
 from .config import config
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.utils import timezone
 
-
-
 import json
 import datetime
 import pytz
+
+# def signup(request):
+#     return render(request, 'registration/signup.html')
 
 
 def mylogin(request):
@@ -19,15 +22,17 @@ def mylogin(request):
     user = authenticate(username=username, password=password)
     if user is not None:
         login(request, user)
-        if user.is_staff:
-            return HttpResponseRedirect(reverse('rup:polygon'))
-        elif user.is_active:
-            return HttpResponseRedirect(reverse('rup:user_view'))
+        # if user.is_active:
+        if user.is_active:
+            return redirect('rup:newfarm.html')
+        elif UserProfile.user == user.get_username(self):
+            return redirect('rup:user_view')
     # else:
         # Return a 'disabled account' error message
             ...
-    # else:
-    #     # Return an 'invalid login' error message.
+    else:
+        alert('invalid login')
+
 
 def set_timezone(request):
     if request.method == 'POST':
@@ -35,6 +40,7 @@ def set_timezone(request):
         return redirect('/')
     else:
         return render(request, 'user_view.html', {'timezones': pytz.common_timezones})
+
 
 def newfarm(request):
     context = {
@@ -45,11 +51,16 @@ def newfarm(request):
 
 @login_required
 def polygon(request):
+    current_user = request.user
     datas = Pesticide.objects.order_by('use')
     locations = Location.objects.all()
-    centers = Center.objects.all()
-    center = centers[0:1]
-    print(center)
+    user_name = User.objects.get(pk=current_user.pk)
+    users = UserProfile.objects.filter(user=user_name)
+
+    latlngs = {
+        'lat': users[0].lat,
+        'lng': users[0].lng
+    }
 
     uses = []
     for i in range(1,(len(datas))):
@@ -60,7 +71,7 @@ def polygon(request):
     context = {
         'uses':uses,
         'datas':datas,
-        'center':center,
+        'latlngs': latlngs,
         'locations':locations,
         'SECRET_KEY_GOOGLE':config['SECRET_KEY_GOOGLE'],
     }
@@ -83,6 +94,7 @@ def get_product(request):
 
     return JsonResponse(data)
 
+
 def modal(request):
     data = json.loads(request.body)
     location_id = data['location_id']
@@ -100,34 +112,35 @@ def modal(request):
 
 def create_location(request):
     data = json.loads(request.body)
-    polyname = data['polyname']
-    rectBounds = data['rectBounds']
-    polyList = data['polyList']
-    newLat = data['centerLat']
-    newLng = data['centerLng']
-    areaRect = data['areaRect']
-    areaPoly = data['areaPoly']
-
-    location_data = UserLocation(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
-    location_data.save()
-    print(location_data)
+    print(data)
+    # user = request.user
+    # polyname = data['polyname']
+    # rectBounds = data['rectBounds']
+    # polyList = data['polyList']
+    # newLat = data['centerLat']
+    # newLng = data['centerLng']
+    # areaRect = data['areaRect']
+    # areaPoly = data['areaPoly']
+    #
+    # location_data = Location(polyname=polyname, rectBounds=rectBounds, polyList=polyList, centerLat=centerLat, centerLng=centerLng, areaRect=areaRect, areaPoly=areaPoly)
+    # location_data.save()
+    # print(location_data)
 
     return HttpResponse('ok')
+
 
 def pick_center(request):
     data = json.loads(request.body)
     lat = data['lat']
     lng = data['lng']
-    timestamp = timezone.now()
-    user_center = Center(lat=lat, lng=lng, timestamp=timestamp)
-    print(user_center)
-    # user_center.save()
-    # print(user_center)
+    user = request.user
+    user_center = UserProfile(lat=lat, lng=lng, user=user)
+    user_center.save()
 
     return HttpResponse('ok')
 
 
-@login_required
+
 def user_view(request):
     # events = LocationPesticide.objects.prefetch_related('pesticide', 'user', 'location')
     now = timezone.now()

@@ -1,17 +1,35 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 import datetime
 from django.utils import timezone
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    lat = models.TextField(null=True)
+    lng = models.TextField(null=True)
+    company_name = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
 class Pesticide(models.Model):
+    registrant_name = models.CharField(max_length=100, blank=True)
     product_name = models.CharField(max_length=200)
     epa_number = models.CharField(max_length=50)
+    active_ingredient = models.CharField(max_length=100, blank=True)
     rui = models.TextField()
     rei = models.DateTimeField(null=True, blank=True)
     use = models.CharField(null=True, max_length=50)
 
     def __str__(self):
         return self.product_name
+
+class Formulation(models.Model):
+    pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
+    rate = models.FloatField(null=True)
+
+    def __str__(self):
+        return self.pesticide.product_name
 
 class Name(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
@@ -23,11 +41,18 @@ class Name(models.Model):
         return self.first_name
 
 class Location(models.Model):
-    name = models.CharField(max_length=200)
-    verticies = models.TextField()
+    userprofile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    polyname = models.CharField(max_length=200, null=True)
+    rectBounds = models.TextField(null=True)
+    polyList = models.TextField(null=True)
+    rectBounds = models.TextField(null=True)
+    newLat = models.CharField(max_length=50, null=True)
+    newLng = models.CharField(max_length=50, null=True)
+    areaRect = models.CharField(max_length=50, null=True)
+    areaPoly = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return self.name
+        return self.polyname
 
     def is_restricted(self):
         now = timezone.now()
@@ -35,35 +60,19 @@ class Location(models.Model):
             return True
         return False
 
-class UserLocation(models.Model):
-    polyname = models.CharField(max_length=200)
-    rectBounds = models.TextField()
-    polyList = models.TextField()
-    rectBounds = models.TextField()
-    newLat = models.CharField(max_length=50)
-    newLng = models.CharField(max_length=50)
-    areaRect = models.CharField(max_length=50)
-    areaPoly = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.polyname
-
 class Center(models.Model):
-    timestamp = models.DateTimeField(null=True, blank=True)
-    lat = models.TextField(null=True)
-    lng = models.TextField(null=True)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.timestamp
+        return '( ' + str(self.lat) + ', ' + str(self.lng) + ' )'
 
 
 class LocationPesticide(models.Model):
     """Many locations or pesticides, one LocationPesticide event"""
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    pesticide = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
+    formulation = models.ForeignKey(Pesticide, on_delete=models.CASCADE)
     start = models.DateTimeField(null=True)
     end = models.DateTimeField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate = models.CharField(null=True, max_length=50)
     target = models.CharField(null=True, max_length=50)
     applicator = models.CharField(null=True, max_length=50)
